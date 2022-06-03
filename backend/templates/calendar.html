@@ -1,0 +1,30 @@
+{% extends "page2.html" %}
+
+{% block header %}
+<a href="/">МК</a>
+/
+{% block header_name %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<center>
+    <h1>{% block header_name_2 %}{% endblock %}</h1>
+    <table width="90%">
+        <tr>
+            <td width="15%" class="d"><-</td>
+            <td width="10%" class="d">Понедельник</td>
+            <td width="10%" class="d">Вторник</td>
+            <td width="10%" class="d">Среда</td>
+            <td width="10%" class="d">Четверг</td>
+            <td width="10%" class="d">Пятница</td>
+            <td width="10%" class="d">Суббота</td>
+            <td width="10%" class="d">Воскресенье</td>
+            <td width="15%" class="d">-></td>
+        </tr>
+        {% block calendar %}{% endblock %}
+    </table>
+</center>
+
+<script>popovers();</script>
+
+{% endblock %}

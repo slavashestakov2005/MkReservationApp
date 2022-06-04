@@ -1,0 +1,144 @@
+{% extends "page1.html" %}
+
+{% block header %}
+<a href="/">МК</a>
+/
+События
+{% endblock %}
+
+{% block content %}
+<center>
+    <div class="row col-12">
+
+        <div class="col-6">
+            <h1>Мастер-классы</h1>
+            <p>Типы мастер-классов, можно повторять несколько раз.</p>
+            <br>
+            <br>
+            <h2>Список</h2>
+            <div class="row table-responsive justify-content-center"><center>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>ID</td>
+                        <td>Название</td>
+                        <td>Описание</td>
+                        <td>Время (мин)</td>
+                    </tr>
+                    {% for now in mc %}
+                        <tr>
+                            <td>{{ now.id }}</td>
+                            <td>{{ now.name }}</td>
+                            <td>{{ now.description }}</td>
+                            <td>{{ now.duration }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </center></div>
+            <br>
+            <br>
+            <h2>Создать</h2>
+            <form action="add_mc" method="post">
+                <p><input type="text" name="name" placeholder="Название"></p>
+                <p><textarea class="textarea" name="description" placeholder="Описание"></textarea></p>
+                <p><input type="text" name="duration" placeholder="Время (мин)"></p>
+                {% if error_add_mc %} <p class="error">[ {{ error_add_mc }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+            <br>
+            <br>
+            <h2>Редактировать</h2>
+            <form action="edit_mc" method="post">
+                <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
+                <p><input type="text" name="name" placeholder="Название"></p>
+                <p><textarea class="textarea" name="description" placeholder="Описание"></textarea></p>
+                <p><input type="text" name="duration" placeholder="Время (мин)"></p>
+                <p>Если поле оставить пустым, то данные не изменятся.</p>
+                {% if error_edit_mc %} <p class="error">[ {{ error_edit_mc }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+            <br>
+            <br>
+            <h2>Удалить</h2>
+            <form action="delete_mc" method="post">
+                <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
+                {% if error_delete_mc %} <p class="error">[ {{ error_delete_mc }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+
+        <div class="col-6">
+            <h1>События</h1>
+            <p>Проведение самого мастер-класса, повторяется только раз.</p>
+            <br>
+            <br>
+            <h2>Список</h2>
+            <div class="row table-responsive justify-content-center"><center>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>ID</td>
+                        <td>Преподаватель</td>
+                        <td>Мастер-класс</td>
+                        <td>Кол-во мест</td>
+                        <td>Стоимость (&#8381;)</td>
+                        <td>Начало</td>
+                    </tr>
+                    {% for now in e %}
+                    <tr>
+                        <td>{{ now.id }}</td>
+                        <td>{{ now.teacher }}</td>
+                        <td>{{ now.master_class }}</td>
+                        <td>{{ now.places }}</td>
+                        <td>{{ now.cost }}</td>
+                        <td>{{ now.date() }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </center></div>
+            <br>
+            <br>
+            <h2>Создать</h2>
+            <form action="add_event" method="post">
+                <p><input type="text" name="teacher" placeholder="ID преподавателя"></p>
+                <p><input type="text" name="master_class" placeholder="ID мастер-класса"></p>
+                <p><input type="text" name="places" placeholder="Кол-во мест"></p>
+                <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
+                <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
+                {% if error_add_event %} <p class="error">[ {{ error_add_event }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+            <br>
+            <br>
+            <h2>Редактировать</h2>
+            <form action="edit_event" method="post">
+                <p><input type="text" name="id" placeholder="ID события"></p>
+                <p><input type="text" name="teacher" placeholder="ID преподавателя"></p>
+                <p><input type="text" name="master_class" placeholder="ID мастер-класса"></p>
+                <p><input type="text" name="places" placeholder="Кол-во мест"></p>
+                <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
+                <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
+                <p>Если поле оставить пустым, то данные не изменятся.</p>
+                <p>(Дату и время иожно менять независимо)</p>
+                {% if error_edit_event %} <p class="error">[ {{ error_edit_event }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+            <br>
+            <br>
+            <h2>Удалить</h2>
+            <form action="delete_event" method="post">
+                <p><input type="text" name="id" placeholder="ID события"></p>
+                {% if error_delete_event %} <p class="error">[ {{ error_delete_event }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+    </div>
+</center>
+
+<script>listenInput(document)</script>
+
+{% endblock %}

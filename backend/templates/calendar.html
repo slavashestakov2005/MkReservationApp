@@ -1,30 +1,22 @@
-{% extends "page2.html" %}
+{% extends "calendar_base.html" %}
 
-{% block header %}
-<a href="/">МК</a>
-/
-{% block header_name %}{% endblock %}
-{% endblock %}
+{% block header_name %}{{ name }}{% endblock %}
+{% block header_name_2 %}{{ name }}{% endblock %}
 
-{% block content %}
-<center>
-    <h1>{% block header_name_2 %}{% endblock %}</h1>
-    <table width="90%">
-        <tr>
-            <td width="15%" class="d"><-</td>
-            <td width="10%" class="d">Понедельник</td>
-            <td width="10%" class="d">Вторник</td>
-            <td width="10%" class="d">Среда</td>
-            <td width="10%" class="d">Четверг</td>
-            <td width="10%" class="d">Пятница</td>
-            <td width="10%" class="d">Суббота</td>
-            <td width="10%" class="d">Воскресенье</td>
-            <td width="15%" class="d">-></td>
-        </tr>
-        {% block calendar %}{% endblock %}
-    </table>
-</center>
-
-<script>popovers();</script>
-
+{% block calendar %}
+{% for week in calendar %}
+    <tr class="d-flex">
+    {% for day in week %}
+        {% if day.day == 0 %}<td class="space"></td>
+        {% elif day.day == -1 %}<td class="week">{{ day.events }}</td>
+        {% else %}
+            <td class="day"><b>{{ day.day }}</b><br>
+            {% for event in day.events %}
+                <span class="event_popup"><a href="../event_popup?id={{ event.id }}">{{ event.name }}</a></span><br>
+            {% endfor %}
+            </td>
+        {% endif %}
+    {% endfor %}
+    </tr>
+{% endfor %}
 {% endblock %}

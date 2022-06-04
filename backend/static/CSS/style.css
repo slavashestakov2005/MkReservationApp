@@ -84,7 +84,9 @@ h4{ font-size: 12pt; }
 
 .week {
     text-align: center;
-    height: 100px;
+    height: auto;
+    width: 160px;
+    margin: 5px;
     outline: 2px solid #000;
     border: 3px solid #fff;
     border-radius: 10px;
@@ -92,7 +94,9 @@ h4{ font-size: 12pt; }
 
 .day {
     text-align: center;
-    height: 100px;
+    height: auto;
+    width: 160px;
+    margin: 5px;
     outline: 2px solid #f00;
     border: 3px solid #fff;
     border-radius: 10px;
@@ -100,7 +104,9 @@ h4{ font-size: 12pt; }
 
 .space {
     text-align: center;
-    height: 100px;
+    height: auto;
+    width: 160px;
+    margin: 5px;
     outline: 2px solid #0000;
     border: 3px solid #0000;
     border-radius: 10px;
@@ -109,4 +115,31 @@ h4{ font-size: 12pt; }
 .info {
     width: 250px;
     height: auto;
+}
+
+.borderless td, .borderless th {
+    border: none;
+}
+
+.borderless{
+    width: auto;
+}
+
+.textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 5px 0;
+    padding: 10px;
+    border: solid 2px #e06969;
+    background-color: #fff;
+    min-height: 54px;
+    font-size: 14px;
+    line-height: 1.2;
+    margin: 0 auto;
+    resize: none;
+}
+
+.error {
+    color: red;
 }

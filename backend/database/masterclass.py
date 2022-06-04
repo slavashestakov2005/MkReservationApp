@@ -31,5 +31,21 @@ class MasterClassesTable:
         );''')
 
     @staticmethod
+    def select_all() -> list:
+        return Table.select_list(MasterClassesTable.table, MasterClass)
+
+    @staticmethod
     def select(id: int) -> MasterClass:
         return Table.select_one(MasterClassesTable.table, MasterClass, 'id', id)
+
+    @staticmethod
+    def insert(mc: MasterClass) -> None:
+        return Table.insert(MasterClassesTable.table, mc)
+
+    @staticmethod
+    def update(mc: MasterClass) -> None:
+        return Table.update(MasterClassesTable.table, mc)
+
+    @staticmethod
+    def delete(mc: MasterClass) -> None:
+        return Table.delete(MasterClassesTable.table, mc)

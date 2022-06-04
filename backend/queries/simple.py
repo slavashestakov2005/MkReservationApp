@@ -2,11 +2,12 @@ from backend import app
 from flask import render_template, request
 from flask_cors import cross_origin
 from jinja2 import TemplateNotFound
-from ..help import not_found_error, forbidden_error, EventPopup
+from ..help import not_found_error, forbidden_error, EventPopup, Calendar
 '''
     /               index()             Возвращает стартовую страницу.
     /<path>         static_file(path)   Возвращает страницу или файл.
     /event_popup    event_popup()       Возвращает описание события.
+    /parse          parse()             Возвращает календарь за июнь 2022 [временный метод].
 '''
 
 
@@ -29,13 +30,18 @@ def static_file(path):
 
 
 @app.route('/event_popup')
+@cross_origin()
 def event_popup():
-    print('popup')
     try:
         event = EventPopup(int(request.args.get('id')))
-    except Exception as ex:
-        print('ex', ex)
+    except Exception:
         return forbidden_error()
-
-    print('Ok')
     return render_template('event.html', obj=event)
+
+
+@app.route('/parse')
+@cross_origin()
+def parse():
+    c = Calendar(2022, 6)
+    name, calendar = c.create()
+    return render_template('calendar.html', name=name, calendar=calendar)

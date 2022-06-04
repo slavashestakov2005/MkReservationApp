@@ -1,4 +1,5 @@
 from .database import Table, Row
+from datetime import datetime
 
 
 class Event(Row):
@@ -15,6 +16,13 @@ class Event(Row):
 
     def __init__(self, row):
         Row.__init__(self, Event, row)
+
+    @staticmethod
+    def sort_by_start(event):
+        return event.start
+
+    def date(self):
+        return datetime.fromtimestamp(self.start).strftime('%Y.%m.%d %H:%M')
 
 
 class EventsTable:
@@ -33,5 +41,25 @@ class EventsTable:
         );''')
 
     @staticmethod
+    def select_all() -> list:
+        return Table.select_list(EventsTable.table, Event)
+
+    @staticmethod
     def select(id: int):
         return Table.select_one(EventsTable.table, Event, 'id', id)
+
+    @staticmethod
+    def select_by_time_limits(start: int, end: int) -> list:
+        return Table.select_list_with_where(EventsTable.table, Event, 'start', start, end)
+
+    @staticmethod
+    def insert(event: Event) -> None:
+        return Table.insert(EventsTable.table, event)
+
+    @staticmethod
+    def update(event: Event) -> None:
+        return Table.update(EventsTable.table, event)
+
+    @staticmethod
+    def delete(event: Event) -> None:
+        return Table.delete(EventsTable.table, event)

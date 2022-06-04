@@ -32,7 +32,3 @@ class EventPopup:
         s = datetime.fromtimestamp(stamp)
         d = timedelta(minutes=delta)
         return (s + d).time().strftime(template)
-
-    def data(self):
-        return {'title': 'Ёлочка', 'time': '10:00 - 12:00', 'desc': 'Будем делать ёолчка своими руками из фанеры', 'cost':
-        '250 Р', 'child': 'Осталось мест 10 / 30', 'teacher': 'Вахитова Е.Ю.'}

@@ -40,12 +40,12 @@ function popover_end(event){
 }
 
 function popovers(){
-    $('.user_popup').hover(
+    $('.event_popup').hover(
         function(event) {
             timer = setTimeout(popover_start, 1000, $(event.currentTarget));
         }, popover_end
     );
-    $('.user_popup').click(
+    $('.event_popup').click(
         function(event) {
             event.preventDefault();
             popover_start($(event.currentTarget));
@@ -53,6 +53,19 @@ function popovers(){
     );
     document.addEventListener('click', function(e) {
         popover_clear();
-        $('.user_popup').popover('hide');
+        $('.event_popup').popover('hide');
     });
+}
+
+function textInput(document, textarea){
+    textarea.style.height = '1px';
+    textarea.style.height = (textarea.scrollHeight + 6) + 'px';
+}
+
+function listenInput(document){
+    let areas = document.getElementsByClassName('textarea');
+    for (let textarea of areas){
+        textarea.oninput = function(){ textInput(document, textarea); };
+        textInput(document, textarea);
+    }
 }

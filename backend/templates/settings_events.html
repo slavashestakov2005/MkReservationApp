@@ -28,7 +28,7 @@
                         <tr>
                             <td>{{ now.id }}</td>
                             <td>{{ now.name }}</td>
-                            <td>{{ now.description }}</td>
+                            <td class="markdown-text"><div>{{ now.description }}</div><div class="markdown-content">{{ now.get_html() }}</div></td>
                             <td>{{ now.duration }}</td>
                         </tr>
                     {% endfor %}
@@ -39,7 +39,7 @@
             <h2>Создать</h2>
             <form action="add_mc" method="post">
                 <p><input type="text" name="name" placeholder="Название"></p>
-                <p><textarea class="textarea" name="description" placeholder="Описание"></textarea></p>
+                <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
                 {% if error_add_mc %} <p class="error">[ {{ error_add_mc }} ]</p>
                 {% endif %}
@@ -51,7 +51,7 @@
             <form action="edit_mc" method="post">
                 <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
                 <p><input type="text" name="name" placeholder="Название"></p>
-                <p><textarea class="textarea" name="description" placeholder="Описание"></textarea></p>
+                <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
                 <p>Если поле оставить пустым, то данные не изменятся.</p>
                 {% if error_edit_mc %} <p class="error">[ {{ error_edit_mc }} ]</p>
@@ -139,6 +139,6 @@
     </div>
 </center>
 
-<script>listenInput(document)</script>
+<script>listenInput(document);showMD(document);</script>
 
 {% endblock %}

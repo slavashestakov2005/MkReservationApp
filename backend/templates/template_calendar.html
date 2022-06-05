@@ -23,7 +23,14 @@
             <tr class="d-flex">
                 {% for day in week %}
                 {% if day.day == 0 %}<td class="space"></td>
-                {% elif day.day == -1 %}<td class="week" onclick="clickCard(document, {{ day.events[1] }}, {{ day.events[2] }})">{{ day.events[0] }}</td>
+                {% elif day.day == -1 %}
+                    {% if day.events[1] %}
+                        <td class="week" onclick="clickCard(document, {{ day.events[1] }}, {{ day.events[2] }})">
+                        {% if day.events[2] != year %}{{ day.events[2] }}<br>{% endif %}
+                        {{ day.events[0] }}
+                        </td>
+                    {% else %}<td class="week" onclick="clickCard(document, 'main')">{{ year }}</td>
+                    {% endif %}
                 {% else %}
                 <td class="day"><b>{{ day.day }}</b><br>
                     {% for event in day.events %}

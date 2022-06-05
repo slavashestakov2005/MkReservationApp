@@ -1,4 +1,5 @@
 from .database import Table, Row
+from markdown import markdown
 
 
 class MasterClass(Row):
@@ -14,6 +15,9 @@ class MasterClass(Row):
 
     def __init__(self, row):
         Row.__init__(self, MasterClass, row)
+
+    def get_html(self):
+        return markdown(self.description)
 
 
 class MasterClassesTable:

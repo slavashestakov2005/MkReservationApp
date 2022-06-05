@@ -121,6 +121,13 @@ class Table:
         return [cls(_) for _ in DataBase.execute("SELECT * FROM " + table_name + x[0], x[1])]
 
     @staticmethod
+    def select_list_with_simple_where(table_name: str, cls, field: str, op: str, val: int) -> list:
+        table_name = Table.correct_table_name(table_name)
+        field = Config.DB_COLS_PREFIX + field
+        return [cls(_) for _ in DataBase.execute("SELECT * FROM {0} WHERE {1} {2} {3}"
+                                                 .format(table_name, field, op, val))]
+
+    @staticmethod
     def select_list_with_where(table_name: str, cls, field: str, start: int, end: int) -> list:
         table_name = Table.correct_table_name(table_name)
         field = Config.DB_COLS_PREFIX + field

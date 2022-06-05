@@ -1,9 +1,10 @@
 <div class="info">
     <center><p><b>{{ obj.title }}</b></p></center>
     <p>{{ obj.date }} {{ obj.start }} - {{ obj.end }}.</p>
-    <p>{{ obj.description }}</p>
+    <p class="markdown-popup">{{ obj.description }}</p>
     <p>Преподаватель: {{ obj.teacher }}</p>
     <p>Стоимость: {{ obj.cost }} &#8381;</p>
     <p>Осталось мест: {{ obj.places }} / {{ obj.places }}</p>
     <center><p><a href="">Записаться</a></p></center>
 </div>
+<script>parseMD(document);</script>

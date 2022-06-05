@@ -74,3 +74,45 @@ function clickCard(document, card, year=0){
     if (year) document.location.href = '../' + year + '/' + card + '.html';
     else document.location.href = card + '.html';
 }
+
+function convert(str) {
+    str = str.replace(/&amp;/g, "&");
+    str = str.replace(/&gt;/g, ">");
+    str = str.replace(/&lt;/g, "<");
+    str = str.replace(/&quot;/g, '"');
+    str = str.replace(/&#039;/g, "'");
+    return str;
+}
+
+function parseMD(document) {
+    let mds = document.getElementsByClassName('markdown-popup');
+    for(let md of mds) md.innerHTML = convert(md.innerHTML.toString());
+}
+
+function markdown_popover(md) {
+    let clickedTime = new Date().getTime();
+    let elem = $(md);
+    if (elem.children().length === 3){
+        elem.popover('hide');
+        md.lastClickTime = clickedTime;
+        return;
+    }
+    if (typeof md.lastClickTime === "undefined" || clickedTime - md.lastClickTime > 1000){
+        md.lastClickTime = clickedTime;
+        return;
+    }
+    md.lastClickTime = clickedTime;
+    let data = convert(elem.children()[1].innerHTML.toString());
+    elem.popover({
+        trigger: 'manual',
+        html: true,
+        animation: true,
+        container: elem,
+        content: data
+    }).popover('show');
+}
+
+function showMD(document) {
+    let mds = document.getElementsByClassName('markdown-text');
+    for(let md of mds) md.onclick = function(){ markdown_popover(md); };
+}

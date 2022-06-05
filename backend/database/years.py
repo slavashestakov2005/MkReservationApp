@@ -23,6 +23,9 @@ class Year(Row):
             self.months += (1 << mouth)
         return self.months
 
+    def copy(self):
+        return Year([self.year, self.months])
+
 
 class YearsTable:
     table = "year"
@@ -42,6 +45,14 @@ class YearsTable:
     @staticmethod
     def select(year: int) -> Year:
         return Table.select_one(YearsTable.table, Year, 'year', year)
+
+    @staticmethod
+    def left(year: int) -> list:
+        return Table.select_list_with_simple_where(YearsTable.table, Year, 'year', '<', year)
+
+    @staticmethod
+    def right(year: int) -> list:
+        return Table.select_list_with_simple_where(YearsTable.table, Year, 'year', '>', year)
 
     @staticmethod
     def update(year: Year) -> None:

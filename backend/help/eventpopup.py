@@ -18,7 +18,7 @@ class EventPopup:
             if not t.__is_none__:
                 self.teacher = t.name()
             if not mc.__is_none__:
-                self.title, self.description = mc.name, mc.description
+                self.title, self.description = mc.name, mc.get_html()
                 self.end = EventPopup.end(ev.start, mc.duration)
 
     @staticmethod

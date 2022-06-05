@@ -158,3 +158,12 @@ h4{ font-size: 12pt; }
     border: 3px solid #fff;
     border-radius: 10px;
 }
+
+.markdown-text {
+    white-space: pre;
+}
+
+.markdown-content {
+    display: none;
+    visibility: hidden;
+}

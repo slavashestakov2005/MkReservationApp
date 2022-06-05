@@ -14,7 +14,7 @@ def stop_debug():
 
 
 def correct_new_line(s: str):
-    return re.sub(r'[\n\r]\s+[\n\r]', r'\n', s.strip())
+    return re.sub(r'[\n\r](\s*[\n\r])*', r'\n', s.strip())
 
 
 def correct_template(template, **data):
@@ -33,7 +33,8 @@ FILES_TEMPLATE = '''{{% extends "page2.html" %}}
 {}
 {{% endblock %}}
 
-{{% block content %}}{}
+{{% block content %}}
+{}
 {{% endblock %}}
 '''
 

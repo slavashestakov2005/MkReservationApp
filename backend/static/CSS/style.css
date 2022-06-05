@@ -143,3 +143,18 @@ h4{ font-size: 12pt; }
 .error {
     color: red;
 }
+
+.narrow-column {
+    min-width: 60px;
+    width: 100%;
+}
+
+.card {
+    text-align: left;
+    width: 300px;
+    margin: 5px;
+    padding: 5px;
+    outline: 2px solid #f00;
+    border: 3px solid #fff;
+    border-radius: 10px;
+}

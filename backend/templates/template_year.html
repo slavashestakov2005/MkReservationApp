@@ -1,0 +1,21 @@
+<a href="/">МК</a>
+/
+{{ info.year }}
+
+<center>
+    <h1>{{ info.year }}</h1>
+    <div class="container col-12">
+        <div class="row justify-content-center">
+            {% for month in info.months %}
+            <div class="card" onclick="clickCard(document, {{ month.id }})">
+                <center><p><b>{{ month.name }}</b></p></center>
+                <p>Проведено мастер-классов: {{ month.mc_count }}.</p>
+                <p>Ребёнка-часов: {{ month.visitors }}.</p>
+                <p>Детей поучаствовало: {{ month.unique_visitors }}.</p>
+                <p>Выручка: {{ month.revenue }}.</p>
+                <p>Прибыль: {{ month.profit }}.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</center>

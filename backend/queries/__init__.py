@@ -1,3 +1,4 @@
+from .calendar_settings import *
 from .events_settings import *
 from .simple import *
-from .teachers import *
+from .users_settings import *

@@ -48,6 +48,10 @@ class TeachersTable:
         );''')
 
     @staticmethod
+    def select_all() -> list:
+        return Table.select_list(TeachersTable.table, Teacher)
+
+    @staticmethod
     def select(id: int) -> Teacher:
         return Table.select_one(TeachersTable.table, Teacher, 'id', id)
 

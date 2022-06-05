@@ -1,0 +1,41 @@
+<a href="/">МК</a>
+/
+<a href="main.html">{{ year }}</a>
+/
+{{ name }}
+
+<center>
+    <h1>{{ name }}</h1>
+    <div class="row table-responsive justify-content-center"><center>
+        <table class="table table-borderless borderless">
+            <tr class="d-flex">
+                <td class="space"></td>
+                <td class="week">Понедельник</td>
+                <td class="week">Вторник</td>
+                <td class="week">Среда</td>
+                <td class="week">Четверг</td>
+                <td class="week">Пятница</td>
+                <td class="week">Суббота</td>
+                <td class="week">Воскресенье</td>
+                <td class="space"></td>
+            </tr>
+            {% for week in calendar %}
+            <tr class="d-flex">
+                {% for day in week %}
+                {% if day.day == 0 %}<td class="space"></td>
+                {% elif day.day == -1 %}<td class="week" onclick="clickCard(document, {{ day.events[1] }}, {{ day.events[2] }})">{{ day.events[0] }}</td>
+                {% else %}
+                <td class="day"><b>{{ day.day }}</b><br>
+                    {% for event in day.events %}
+                    <span class="event_popup"><a href="../event_popup?id={{ event.id }}">{{ event.name }}</a></span><br>
+                    {% endfor %}
+                </td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </center></div>
+</center>
+
+<script>popovers();</script>

@@ -1,0 +1,73 @@
+{% extends "page1.html" %}
+
+{% block header %}
+<a href="/">МК</a>
+/
+Календарь
+{% endblock %}
+
+{% block content %}
+<center>
+    <div class="row col-12 justify-content-center">
+        <div class="col-12"><center>
+            <h1>Календарь</h1>
+            <p>Настривает месяца, которые может видеть посетитель сайта.</p>
+        </center></div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <br>
+            <br>
+            <h2>Создать год</h2>
+            <form action="add_year" method="post">
+                <p><input type="text" name="year" placeholder="Год"></p>
+                {% if error_add_year %} <p class="error">[ {{ error_add_year }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <br>
+            <br>
+            <h2>Удалить год</h2>
+            <form action="delete_year" method="post">
+                <p><input type="text" name="year" placeholder="Год"></p>
+                {% if error_delete_year %} <p class="error">[ {{ error_delete_year }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <br>
+            <br>
+            <h2>Редактировать</h2>
+            <form action="edit_year" method="post">
+                <div class="row table-responsive justify-content-center"><center>
+                    <table class="table table-bordered table-striped">
+                        <tr class="d-flex">
+                            <td class="narrow-column">Год</td>
+                            {% for i in range(1, 13) %}
+                                <td class="narrow-column">{{ i }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% for now in years %}
+                        <tr class="d-flex">
+                            <td class="narrow-column">{{ now.year }}</td>
+                            {% for i in range(1, 13) %}
+                                <td class="narrow-column">
+                                    {% if now.exists(i - 1) %}<input type="checkbox" name="months" value="{{ now.year }}-{{ i }}" checked>
+                                    {% else %}<input type="checkbox" name="months" value="{{ now.year }}-{{ i }}">
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </center></div>
+                {% if error_edit_year %} <p class="error">[ {{ error_edit_year }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+    </div>
+</center>
+
+{% endblock %}

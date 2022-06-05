@@ -69,3 +69,8 @@ function listenInput(document){
         textInput(document, textarea);
     }
 }
+
+function clickCard(document, card, year=0){
+    if (year) document.location.href = '../' + year + '/' + card + '.html';
+    else document.location.href = card + '.html';
+}

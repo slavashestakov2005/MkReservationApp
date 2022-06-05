@@ -7,6 +7,11 @@ MONTH = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май',
          'Декабрь']
 
 
+def correct_form(mouth):
+    mouth %= 12
+    return mouth if mouth else 12
+
+
 class EventInfo:
     def __init__(self, id, name):
         self.id, self.name = id, name
@@ -23,6 +28,18 @@ class DayInfo:
 
     def __repr__(self):
         return "DayInfo('day': {}, 'days': {})".format(self.day, self.days)
+
+
+class MonthInfo:
+    def __init__(self, m):
+        self.id, self.name = m + 1, MONTH[m]
+        self.mc_count, self.visitors, self.unique_visitors, self.revenue, self.profit = 0, 0, 0, 0, 0
+
+
+class YearInfo:
+    def __init__(self, year):
+        self.year = year
+        self.months = [MonthInfo(m) for m in range(12)]
 
 
 class Calendar:
@@ -60,8 +77,10 @@ class Calendar:
                 calendar[-1].append(DayInfo(day, info))
         while len(calendar[-1]) != 9:
             calendar[-1].append(DayInfo())
-        calendar[-3][0].events = MONTH[(self.month + 10) % 12]
-        calendar[-3][8].events = MONTH[self.month % 12]
+        calendar[-3][0].events = [MONTH[(self.month + 10) % 12], correct_form(self.month - 1),
+                                  self.year - (1 if self.month == 1 else 0)]
+        calendar[-3][8].events = [MONTH[self.month % 12], correct_form(self.month + 1),
+                                  self.year + (1 if self.month == 12 else 0)]
         calendar[-3][0].day = calendar[-3][8].day = -1
         return MONTH[(self.month + 11) % 12], calendar
 

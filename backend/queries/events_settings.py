@@ -8,17 +8,17 @@ from ..database import MasterClassesTable, MasterClass, EventsTable, Event, Teac
 '''
                     TEMPLATE            Имя шиблона с настройкой мастер-классов и событий.
                     params()            Постоянные параметры этого шаблона.
-    /events         events()            Пересылает на страницы с этим шаблоном.
+    /events         events()            Пересылает на страницу с этим шаблоном.
     /add_mc         add_mc()            Создаёт мастер-класс.
     /edit_mc        edit_mc()           Редактирует мастер-класс.
-    /edit_mc        edit_mc()           Удаляет мастер-класс.
+    /delete_mc      delete_mc()         Удаляет мастер-класс.
     /add_event      add_event()         Создаёт событие.
     /edit_event     edit_event()        Редактирует событие.
     /delete_event   delete_event()      Удаляет событие.
 '''
 
 
-TEMPLATE = 'events_settings.html'
+TEMPLATE = 'settings_events.html'
 
 
 def params():

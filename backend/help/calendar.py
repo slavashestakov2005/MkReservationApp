@@ -2,16 +2,12 @@ from datetime import datetime, timedelta
 from calendar import monthrange
 from ..database import Event, EventsTable, MasterClassesTable, TeachersTable, YearsTable
 from ..config import Config
-from .help import save_template
-
-
-MONTH = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
-         'Декабрь']
+from .help import save_template, mouth_name
 
 
 class EventInfo:
     def __init__(self, event, mc, teacher):
-        self.id, self.places, self.cost = event.id, event.places, event.cost
+        self.id, self.places, self.cost, self.booked = event.id, event.places, event.cost, event.booked
         self.date, self.start = EventInfo.start(event.start)
         self.end = EventInfo.end(event.start, mc.duration)
         self.name, self.description = mc.name, mc.get_html()
@@ -42,7 +38,7 @@ class DayInfo:
 
 class MonthInfo:
     def __init__(self, m):
-        self.id, self.name = m + 1, MONTH[m]
+        self.id, self.name = m + 1, mouth_name(m)
         self.mc_count, self.visitors, self.unique_visitors, self.revenue, self.profit = 0, 0, 0, 0, 0
 
 
@@ -85,10 +81,10 @@ class Calendar:
                 calendar[-1].append(DayInfo(day, info))
         while len(calendar[-1]) != 9:
             calendar[-1].append(DayInfo())
-        calendar[-3][0].events = [MONTH[left[1] - 1], left[1], left[0]]
-        calendar[-3][8].events = [MONTH[right[1] - 1], right[1], right[0]]
+        calendar[-3][0].events = [mouth_name(left[1] - 1), left[1], left[0]]
+        calendar[-3][8].events = [mouth_name(right[1] - 1), right[1], right[0]]
         calendar[-3][0].day = calendar[-3][8].day = -1
-        return MONTH[(self.month + 11) % 12], calendar
+        return mouth_name((self.month + 11) % 12), calendar
 
 
 def update_mouth(this, prev, next, mc, teachers):

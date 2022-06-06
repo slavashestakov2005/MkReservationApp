@@ -79,10 +79,11 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>ID</td>
-                        <td>Преподаватель</td>
-                        <td>Мастер-класс</td>
-                        <td>Кол-во мест</td>
-                        <td>Стоимость (&#8381;)</td>
+                        <td>Преп.</td>
+                        <td>МК</td>
+                        <td>Мест</td>
+                        <td>Бронь</td>
+                        <td>Цена (&#8381;)</td>
                         <td>Начало</td>
                     </tr>
                     {% for now in e %}
@@ -91,6 +92,7 @@
                         <td>{{ now.teacher }}</td>
                         <td>{{ now.master_class }}</td>
                         <td>{{ now.places }}</td>
+                        <td>{{ now.booked }}</td>
                         <td>{{ now.cost }}</td>
                         <td>{{ now.date() }}</td>
                     </tr>

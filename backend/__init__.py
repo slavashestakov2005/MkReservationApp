@@ -12,6 +12,6 @@ login.login_view = 'login'
 app.config.from_object(Config)
 
 
+import backend.help
 import backend.queries
 import backend.database
-import backend.help

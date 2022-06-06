@@ -6,32 +6,46 @@
 /
 <a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
 /
-<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">Месяц №{{ event.mouth()[1] }}</a>
+<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">{{ event.mouth_name() }}</a>
 {% endif %}
 /
 Регистрация
 {% endblock %}
 
 {% block content %}
-<center>
-    <h1>Регистрация</h1>
-    {% if event %}
-        <h2>Описание события</h2>
-            <p>ID события: {{ event.id }}</p>
-        <h2>Регистрация</h2>
-        <form action="add_visitor" method="post">
-            <p class="invisible"><input type="text" name="event" value="{{ event.id }}" hidden></p>
-            <p><input type="text" name="name1" placeholder="Фамилия ребёнка"></p>
-            <p><input type="text" name="name2" placeholder="Имя ребёнка"></p>
-            <p><input type="text" name="class" placeholder="Класс"></p>
-            {% if error_add_visitor %} <p class="error">[ {{ error_add_visitor }} ]</p>
-            {% endif %}
-            <input type="submit" value="Сохранить">
-        </form>
-        {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>{% endif %}
+<div class="row col-12 justify-content-center">
+    <div class="col-12"><center><h1>Регистрация</h1></center></div>
+    {% if info %}
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <center><h2>Описание события</h2></center>
+            <center><p><b>{{ info.name }}</b></p></center>
+            <p>{{ info.date }} {{ info.start }} - {{ info.end }}.</p>
+            <p class="markdown-popup">{{ info.description }}</p>
+            <p>Преподаватель: {{ info.teacher }}</p>
+            <p>Стоимость: {{ info.cost }} &#8381;</p>
+            <p class="places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
+            <script>choice_color(document, {{ info.places - info.booked }});</script>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <center><h2>Регистрация</h2>
+            <form action="add_visitor" method="post">
+                <p class="invisible"><input type="text" name="event" value="{{ event.id }}" hidden></p>
+                <p><input type="text" name="name1" placeholder="Фамилия ребёнка"></p>
+                <p><input type="text" name="name2" placeholder="Имя ребёнка"></p>
+                <p><input type="text" name="class" placeholder="Класс"></p>
+                {% if error_add_visitor %} <p class="error">[ {{ error_add_visitor }} ]</p>
+                {% endif %}
+                <input type="submit" value="Сохранить">
+            </form></center>
+            {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>{% endif %}
+        </div>
+    {% elif msg %}
+        <div class="col-12"><center><p class="error">{{ msg }}</p></center></div>
     {% else %}
-        <p class="error">Такое событие не найдено, попробуйте ещё раз...</p>
+        <div class="col-12"><center><p class="error">Такое событие не найдено, попробуйте ещё раз...</p></center></div>
     {% endif %}
-</center>
+</div>
+
+<script>parseMD(document);</script>
 
 {% endblock %}

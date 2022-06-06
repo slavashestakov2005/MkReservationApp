@@ -6,46 +6,59 @@
 /
 <a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
 /
-<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">Месяц №{{ event.mouth()[1] }}</a>
+<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">{{ event.mouth_name() }}</a>
 {% endif %}
 /
 Записавшиеся
 {% endblock %}
 
 {% block content %}
-<center>
-    <h1>Записавшиеся</h1>
-    {% if event %}
-        <h2>Описание события</h2>
-            <p>ID события: {{ event.id }}</p>
-        <h2>Записавшиеся</h2>
-        {% if data.__len__() == 0 %}
-            <p>На это событие пока никто не записался :(</p>
-        {% else %}
-            <div class="row col-12 justify-content-center"><div class="col-lg-6 col-md-8 col-sm-12"><div class="row table-responsive">
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>ID</td>
-                        <td>Фамилия</td>
-                        <td>Имя</td>
-                        <td>Класс</td>
-                        <td>Статус</td>
-                    </tr>
-                    {% for visitor in data %}
+<div class="row col-12 justify-content-center">
+    <div class="col-12"><center><h1>Записавшиеся</h1></center></div>
+    {% if info %}
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <center><h2>Описание события</h2></center>
+            <center><p><b>{{ info.name }}</b></p></center>
+            <p>{{ info.date }} {{ info.start }} - {{ info.end }}.</p>
+            <p class="markdown-popup">{{ info.description }}</p>
+            <p>Преподаватель: {{ info.teacher }}</p>
+            <p>Стоимость: {{ info.cost }} &#8381;</p>
+            <p class="places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
+            <script>choice_color(document, {{ info.places - info.booked }});</script>
+        </div>
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <center><h2>Записавшиеся</h2>
+            {% if data.__len__() == 0 %}
+                <p>На это событие пока никто не записался :(</p>
+            {% else %}
+                <div class="row justify-content-center"><div class="col-12"><div class="row table-responsive">
+                    <table class="table table-bordered table-striped">
                         <tr>
-                            <td>{{ visitor.id }}</td>
-                            <td>{{ visitor.name1 }}</td>
-                            <td>{{ visitor.name2 }}</td>
-                            <td>{{ visitor.vclass }}</td>
-                            <td>{{ visitor.get_status() }}</td>
+                            <td>ID</td>
+                            <td>Фамилия</td>
+                            <td>Имя</td>
+                            <td>Класс</td>
+                            <td>Статус</td>
                         </tr>
-                    {% endfor %}
-                </table>
-            </div></div></div>
-        {% endif %}
+                        {% for visitor in data %}
+                            <tr>
+                                <td>{{ visitor.id }}</td>
+                                <td>{{ visitor.name1 }}</td>
+                                <td>{{ visitor.name2 }}</td>
+                                <td>{{ visitor.vclass }}</td>
+                                <td>{{ visitor.get_status() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div></div></div>
+            {% endif %}
+            </center>
+        </div>
     {% else %}
         <p class="error">Такое событие не найдено, попробуйте ещё раз...</p>
     {% endif %}
 </center>
+
+<script>parseMD(document);</script>
 
 {% endblock %}

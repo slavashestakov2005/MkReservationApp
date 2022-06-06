@@ -51,3 +51,11 @@ def edit_template(template, comment, example, **data):
     f = SplitFile(Config.TEMPLATES_FOLDER + '/' + template)
     f.insert_after_comment(comment, '\n' + s + '\n')
     f.save_file()
+
+
+MONTH = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
+         'Декабрь']
+
+
+def mouth_name(month):
+    return MONTH[month]

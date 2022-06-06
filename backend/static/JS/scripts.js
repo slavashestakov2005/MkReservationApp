@@ -2,6 +2,12 @@ let timer = null;
 let xhr = null;
 
 
+function get_color_for_places(value){
+    if (value === 0) return 'places-ended';
+    else if (value <= 5) return 'places-few';
+    else return 'places-many';
+}
+
 function popover_start(elem){
     timer = null;
     let hr = elem.children()[0].href;
@@ -9,9 +15,7 @@ function popover_start(elem){
     xhr = $.ajax(hr).done(
         function(data) {
             xhr = null;
-            if (data['value'] === 0) content_color = content_color.replace('_', 'places-ended');
-            else if (data['value'] <= 5) content_color = content_color.replace('_', 'places-few');
-            else content_color = content_color.replace('_', 'places-many');
+            content_color = content_color.replace('_',  get_color_for_places(data['value']));
             elem.popover({
                 trigger: 'manual',
                 html: true,
@@ -123,4 +127,10 @@ function showMD(document) {
 
 function visit(document, url) {
     document.location.href = url;
+}
+
+function choice_color(document, value){
+    let elements = document.getElementsByClassName('places-choice');
+    let name = get_color_for_places(value);
+    for (let elem of elements) elem.className = name;
 }

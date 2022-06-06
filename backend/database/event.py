@@ -1,5 +1,6 @@
 from .database import Table, Row
 from datetime import datetime
+from ..help.help import mouth_name
 
 
 class Event(Row):
@@ -9,10 +10,11 @@ class Event(Row):
         teacher         INT     NOT NULL
         master_class    INT     NOT NULL
         places          INT     NOT NULL
+        booked          INR     NOT NULL
         cost            INT     NOT NULL
         start           INT     NOT NULL                        (Unix, секунды)
     """
-    fields = ['id', 'teacher', 'master_class', 'places', 'cost', 'start']
+    fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'start']
 
     def __init__(self, row):
         Row.__init__(self, Event, row)
@@ -28,6 +30,9 @@ class Event(Row):
         dt = datetime.fromtimestamp(self.start)
         return dt.year, dt.month
 
+    def mouth_name(self):
+        return mouth_name(self.mouth()[1] - 1)
+
 
 class EventsTable:
     table = "event"
@@ -39,6 +44,7 @@ class EventsTable:
         "teacher"	INTEGER NOT NULL,
         "master_class"	INTEGER NOT NULL,
         "places"	INTEGER NOT NULL,
+        "booked"	INTEGER NOT NULL,
         "cost"	INTEGER NOT NULL,
         "start"	INTEGER NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)

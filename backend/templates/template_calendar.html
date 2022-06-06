@@ -34,7 +34,21 @@
                 {% else %}
                 <td class="day"><b>{{ day.day }}</b><br>
                     {% for event in day.events %}
-                    <span class="event_popup"><a href="../event_popup?id={{ event.id }}">{{ event.name }}</a></span><br>
+                    <span class="event_popup">
+                        <a href="../visitors_count?id={{ event.id }}">{{ event.name }}</a>
+                        <div class="invisible">
+                            <center><p><b>{{ event.name }}</b></p></center>
+                            <p>{{ event.date }} {{ event.start }} - {{ event.end }}.</p>
+                            <p class="markdown-popup">{{ event.description }}</p>
+                            <p>Преподаватель: {{ event.teacher }}</p>
+                            <p>Стоимость: {{ event.cost }} &#8381;</p>
+                            <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / {{ event.places }}</p>
+                            <center>
+                                <p><a href="../visitors?event={{ event.id }}" onclick="visit(document, '../visitors?event={{ event.id }}')">Записаться</a></p>
+                                <p><a href="../show_visitors?event={{ event.id }}" onclick="visit(document, '../show_visitors?event={{ event.id }}')">Записавшиеся</a></p>
+                            </center>
+                        </div>
+                    </span><br>
                     {% endfor %}
                 </td>
                 {% endif %}
@@ -45,4 +59,4 @@
     </center></div>
 </center>
 
-<script>popovers();</script>
+<script>popovers();parseMD(document);</script>

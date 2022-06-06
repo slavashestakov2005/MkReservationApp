@@ -167,3 +167,20 @@ h4{ font-size: 12pt; }
     display: none;
     visibility: hidden;
 }
+
+.invisible {
+    display: none;
+    visibility: hidden;
+}
+
+.places-ended {
+    color: red;
+}
+
+.places-few {
+    color: orange;
+}
+
+.places-many {
+    color: green;
+}

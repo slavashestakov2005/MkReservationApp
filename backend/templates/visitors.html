@@ -1,0 +1,37 @@
+{% extends "page1.html" %}
+
+{% block header %}
+<a href="/">МК</a>
+{% if event %}
+/
+<a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
+/
+<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">Месяц №{{ event.mouth()[1] }}</a>
+{% endif %}
+/
+Регистрация
+{% endblock %}
+
+{% block content %}
+<center>
+    <h1>Регистрация</h1>
+    {% if event %}
+        <h2>Описание события</h2>
+            <p>ID события: {{ event.id }}</p>
+        <h2>Регистрация</h2>
+        <form action="add_visitor" method="post">
+            <p class="invisible"><input type="text" name="event" value="{{ event.id }}" hidden></p>
+            <p><input type="text" name="name1" placeholder="Фамилия ребёнка"></p>
+            <p><input type="text" name="name2" placeholder="Имя ребёнка"></p>
+            <p><input type="text" name="class" placeholder="Класс"></p>
+            {% if error_add_visitor %} <p class="error">[ {{ error_add_visitor }} ]</p>
+            {% endif %}
+            <input type="submit" value="Сохранить">
+        </form>
+        {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>{% endif %}
+    {% else %}
+        <p class="error">Такое событие не найдено, попробуйте ещё раз...</p>
+    {% endif %}
+</center>
+
+{% endblock %}

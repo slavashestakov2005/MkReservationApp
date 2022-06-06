@@ -3,7 +3,7 @@ from flask import render_template, request
 from flask_cors import cross_origin
 from flask_login import login_required
 from datetime import datetime
-from ..help import empty_checker
+from ..help import empty_checker, calendar_update_all, calendar_update_mouths
 from ..database import MasterClassesTable, MasterClass, EventsTable, Event, TeachersTable
 '''
                     TEMPLATE            Имя шиблона с настройкой мастер-классов и событий.
@@ -75,6 +75,7 @@ def edit_mc():
     if duration:
         mc.duration = duration
     MasterClassesTable.update(mc)
+    calendar_update_all()
     return render_template(TEMPLATE, error_edit_mc='Мастер-класс изменён', **params())
 
 
@@ -91,6 +92,7 @@ def delete_mc():
     if mc.__is_none__:
         return render_template(TEMPLATE, error_delete_mc='Не верный ID мастер-класса', **params())
     MasterClassesTable.delete(mc)
+    calendar_update_all()
     return render_template(TEMPLATE, error_delete_mc='Мастер-класс удалён', **params())
 
 
@@ -121,6 +123,7 @@ def add_event():
         return render_template(TEMPLATE, error_add_event='Событие не может быть запланировано на такую дату', **params())
     ev = Event([None, teacher, master_class, places, cost, start])
     EventsTable.insert(ev)
+    calendar_update_mouths([ev.mouth()])
     return render_template(TEMPLATE, error_add_event='Событие добавлено', **params())
 
 
@@ -152,6 +155,7 @@ def edit_event():
         return render_template(TEMPLATE, error_edit_event='Событие не может столько стоить', **params())
     if date != 0 and (date[0] < 2022 or date[0] > 2100):
         return render_template(TEMPLATE, error_edit_event='Событие не может быть запланировано на такую дату', **params())
+    old_mouth = event.mouth()
     if teacher:
         event.teacher = teacher
     if master_class:
@@ -168,6 +172,11 @@ def edit_event():
     elif time != 0:
         event.start = int(datetime(*list(map(int, old_time[0].split('.'))), *time).timestamp())
     EventsTable.update(event)
+    new_mouth = event.mouth()
+    if old_mouth != new_mouth:
+        calendar_update_mouths([old_mouth, new_mouth])
+    else:
+        calendar_update_mouths([old_mouth])
     return render_template(TEMPLATE, error_edit_event='Событие изменено', **params())
 
 
@@ -184,4 +193,5 @@ def delete_event():
     if event.__is_none__:
         return render_template(TEMPLATE, error_delete_event='Не верный ID события', **params())
     EventsTable.delete(event)
+    calendar_update_mouths([event.mouth()])
     return render_template(TEMPLATE, error_delete_event='Событие удалено', **params())

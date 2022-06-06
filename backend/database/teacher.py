@@ -5,7 +5,7 @@ from flask_login import UserMixin
 
 class Teacher(Row, UserMixin):
     """
-        Строка таблицы ListenersTable
+        Строка таблицы TeachersTable
         id          INT     NOT NULL    PK  AI  UNIQUE
         name1       TEXT    NOT NULL                        (Фамилия)
         name2       TEXT    NOT NULL                        (Имя)

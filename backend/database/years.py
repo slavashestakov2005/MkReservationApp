@@ -3,7 +3,7 @@ from .database import Table, Row
 
 class Year(Row):
     """
-        Строка таблицы ListenersTable
+        Строка таблицы YearsTable
         year            INT     NOT NULL    PK      UNIQUE
         months          INT     NOT NULL                        (битовое представление, месяца [0;11])
     """

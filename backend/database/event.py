@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Event(Row):
     """
-        Строка таблицы ListenersTable
+        Строка таблицы EventsTable
         id              INT     NOT NULL    PK  AI  UNIQUE
         teacher         INT     NOT NULL
         master_class    INT     NOT NULL
@@ -23,6 +23,10 @@ class Event(Row):
 
     def date(self):
         return datetime.fromtimestamp(self.start).strftime('%Y.%m.%d %H:%M')
+
+    def mouth(self):
+        dt = datetime.fromtimestamp(self.start)
+        return dt.year, dt.month
 
 
 class EventsTable:

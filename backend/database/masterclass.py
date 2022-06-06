@@ -4,7 +4,7 @@ from markdown import markdown
 
 class MasterClass(Row):
     """
-        Строка таблицы ListenersTable
+        Строка таблицы MasterClassesTable
         id              INT     NOT NULL    PK  AI  UNIQUE
         name            TEXT    NOT NULL
         photo           TEXT    NOT NULL

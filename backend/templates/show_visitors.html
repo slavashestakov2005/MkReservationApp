@@ -1,0 +1,51 @@
+{% extends "page1.html" %}
+
+{% block header %}
+<a href="/">МК</a>
+{% if event %}
+/
+<a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
+/
+<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">Месяц №{{ event.mouth()[1] }}</a>
+{% endif %}
+/
+Записавшиеся
+{% endblock %}
+
+{% block content %}
+<center>
+    <h1>Записавшиеся</h1>
+    {% if event %}
+        <h2>Описание события</h2>
+            <p>ID события: {{ event.id }}</p>
+        <h2>Записавшиеся</h2>
+        {% if data.__len__() == 0 %}
+            <p>На это событие пока никто не записался :(</p>
+        {% else %}
+            <div class="row col-12 justify-content-center"><div class="col-lg-6 col-md-8 col-sm-12"><div class="row table-responsive">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>ID</td>
+                        <td>Фамилия</td>
+                        <td>Имя</td>
+                        <td>Класс</td>
+                        <td>Статус</td>
+                    </tr>
+                    {% for visitor in data %}
+                        <tr>
+                            <td>{{ visitor.id }}</td>
+                            <td>{{ visitor.name1 }}</td>
+                            <td>{{ visitor.name2 }}</td>
+                            <td>{{ visitor.vclass }}</td>
+                            <td>{{ visitor.get_status() }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div></div></div>
+        {% endif %}
+    {% else %}
+        <p class="error">Такое событие не найдено, попробуйте ещё раз...</p>
+    {% endif %}
+</center>
+
+{% endblock %}

@@ -5,15 +5,19 @@ let xhr = null;
 function popover_start(elem){
     timer = null;
     let hr = elem.children()[0].href;
+    let template = elem.children()[1].innerHTML, content_color = ' class="_">';
     xhr = $.ajax(hr).done(
         function(data) {
             xhr = null;
+            if (data['value'] === 0) content_color = content_color.replace('_', 'places-ended');
+            else if (data['value'] <= 5) content_color = content_color.replace('_', 'places-few');
+            else content_color = content_color.replace('_', 'places-many');
             elem.popover({
                 trigger: 'manual',
                 html: true,
                 animation: false,
                 container: elem,
-                content: data
+                content: template.replace('><!-- put color of places here -->', content_color).replace('<!-- put empty places here -->', data['value'])
             }).popover('show');
         }
     );
@@ -115,4 +119,8 @@ function markdown_popover(md) {
 function showMD(document) {
     let mds = document.getElementsByClassName('markdown-text');
     for(let md of mds) md.onclick = function(){ markdown_popover(md); };
+}
+
+function visit(document, url) {
+    document.location.href = url;
 }

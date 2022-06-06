@@ -3,6 +3,7 @@ from .database import *
 from .event import *
 from .masterclass import *
 from .teacher import *
+from .visitor import *
 from .years import *
 
 
@@ -11,4 +12,5 @@ def create_tables():
         EventsTable.create_table()
         MasterClassesTable.create_table()
         TeachersTable.create_table()
+        VisitorsTable.create_table()
         YearsTable.create_table()

@@ -34,9 +34,61 @@
                 <td class="day"><b>3</b><br>
                 </td>
                 <td class="day"><b>4</b><br>
-                    <span class="event_popup"><a href="../event_popup?id=2">Flask-сайт</a></span><br>
-                    <span class="event_popup"><a href="../event_popup?id=1">Ёлочка</a></span><br>
-                    <span class="event_popup"><a href="../event_popup?id=4">Markdown</a></span><br>
+                    <span class="event_popup">
+                        <a href="../visitors_count?id=2">Flask-сайт</a>
+                        <div class="invisible">
+                            <center><p><b>Flask-сайт</b></p></center>
+                            <p>2022.06.04 11:00 - 12:00.</p>
+                            <p class="markdown-popup">&lt;p&gt;Будем учиться создавать сайты на Flask&lt;/p&gt;</p>
+                            <p>Преподаватель: Вахитова Е. Ю.</p>
+                            <p>Стоимость: 500 &#8381;</p>
+                            <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / 2</p>
+                            <center>
+                                <p><a href="../visitors?event=2" onclick="visit(document, '../visitors?event=2')">Записаться</a></p>
+                                <p><a href="../show_visitors?event=2" onclick="visit(document, '../show_visitors?event=2')">Записавшиеся</a></p>
+                            </center>
+                        </div>
+                    </span><br>
+                    <span class="event_popup">
+                        <a href="../visitors_count?id=1">Ёлочка</a>
+                        <div class="invisible">
+                            <center><p><b>Ёлочка</b></p></center>
+                            <p>2022.06.04 17:00 - 19:00.</p>
+                            <p class="markdown-popup">&lt;p&gt;Будем делать ёолчку своими руками из фанеры.&lt;/p&gt;</p>
+                            <p>Преподаватель: Вахитова Е. Ю.</p>
+                            <p>Стоимость: 250 &#8381;</p>
+                            <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / 30</p>
+                            <center>
+                                <p><a href="../visitors?event=1" onclick="visit(document, '../visitors?event=1')">Записаться</a></p>
+                                <p><a href="../show_visitors?event=1" onclick="visit(document, '../show_visitors?event=1')">Записавшиеся</a></p>
+                            </center>
+                        </div>
+                    </span><br>
+                    <span class="event_popup">
+                        <a href="../visitors_count?id=4">Markdown</a>
+                        <div class="invisible">
+                            <center><p><b>Markdown</b></p></center>
+                            <p>2022.06.04 19:00 - 20:00.</p>
+                            <p class="markdown-popup">&lt;p&gt;&lt;em&gt;Вы&lt;/em&gt; научитесь &lt;strong&gt;оформлять&lt;/strong&gt; свои тексты используя &lt;strong&gt;&lt;em&gt;Markdown&lt;/em&gt;&lt;/strong&gt;!  &lt;br /&gt;
+Во-первых создавать:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Маркированные списки&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Во-вторых создавать:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Нумерованные списки&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;И в-третьих:&lt;/p&gt;
+&lt;h3&gt;Делать заголовки&lt;/h3&gt;</p>
+                            <p>Преподаватель: Вахитова Е. Ю.</p>
+                            <p>Стоимость: 200 &#8381;</p>
+                            <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / 5</p>
+                            <center>
+                                <p><a href="../visitors?event=4" onclick="visit(document, '../visitors?event=4')">Записаться</a></p>
+                                <p><a href="../show_visitors?event=4" onclick="visit(document, '../show_visitors?event=4')">Записавшиеся</a></p>
+                            </center>
+                        </div>
+                    </span><br>
                 </td>
                 <td class="day"><b>5</b><br>
                 </td>
@@ -45,6 +97,21 @@
             <tr class="d-flex">
                 <td class="space"></td>
                 <td class="day"><b>6</b><br>
+                    <span class="event_popup">
+                        <a href="../visitors_count?id=5">ЛТЧ</a>
+                        <div class="invisible">
+                            <center><p><b>ЛТЧ</b></p></center>
+                            <p>2022.06.06 09:00 - 13:00.</p>
+                            <p class="markdown-popup">&lt;p&gt;Отработайте ЛТЧ в библиотеке!&lt;/p&gt;</p>
+                            <p>Преподаватель: Шестаков В. Г.</p>
+                            <p>Стоимость: 100 &#8381;</p>
+                            <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / 10</p>
+                            <center>
+                                <p><a href="../visitors?event=5" onclick="visit(document, '../visitors?event=5')">Записаться</a></p>
+                                <p><a href="../show_visitors?event=5" onclick="visit(document, '../show_visitors?event=5')">Записавшиеся</a></p>
+                            </center>
+                        </div>
+                    </span><br>
                 </td>
                 <td class="day"><b>7</b><br>
                 </td>
@@ -118,5 +185,5 @@
         </table>
     </center></div>
 </center>
-<script>popovers();</script>
+<script>popovers();parseMD(document);</script>
 {% endblock %}

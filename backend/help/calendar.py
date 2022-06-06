@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from calendar import monthrange
-from ..database import Event, EventsTable, MasterClassesTable
+from ..database import Event, EventsTable, MasterClassesTable, TeachersTable, YearsTable
 from ..config import Config
 from .help import save_template
 
@@ -10,11 +10,24 @@ MONTH = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май',
 
 
 class EventInfo:
-    def __init__(self, id, name):
-        self.id, self.name = id, name
+    def __init__(self, event, mc, teacher):
+        self.id, self.places, self.cost = event.id, event.places, event.cost
+        self.date, self.start = EventInfo.start(event.start)
+        self.end = EventInfo.end(event.start, mc.duration)
+        self.name, self.description = mc.name, mc.get_html()
+        self.teacher = teacher.name()
 
-    def __repr__(self):
-        return "EventInfo('id': {}, 'name': {})".format(self.id, self.name)
+    @staticmethod
+    def start(stamp):
+        s = datetime.fromtimestamp(stamp)
+        return s.strftime('%Y.%m.%d'), s.strftime('%H:%M')
+
+    @staticmethod
+    def end(stamp, delta):
+        template = '%H:%M'
+        s = datetime.fromtimestamp(stamp)
+        d = timedelta(minutes=delta)
+        return (s + d).time().strftime(template)
 
 
 class DayInfo:
@@ -51,14 +64,13 @@ class Calendar:
         events.sort(key=Event.sort_by_start)
         days_info = {}
         for event in events:
-            event.start = datetime.fromtimestamp(event.start)
-            d = event.start.day
+            d = datetime.fromtimestamp(event.start).day
             if d not in days_info:
                 days_info[d] = []
             days_info[d].append(event)
         return days_info
 
-    def create(self, left, right, mc):
+    def create(self, left, right, mc, teachers):
         events_days_info = self.prepare_events()
         calendar = [[DayInfo() for _ in range(self.first_day + 1)]]
         for day in range(1, 1 + self.days):
@@ -69,7 +81,7 @@ class Calendar:
             if day not in events_days_info:
                 calendar[-1].append(DayInfo(day))
             else:
-                info = [EventInfo(_.id, mc[_.master_class].name) for _ in events_days_info[day]]
+                info = [EventInfo(_, mc[_.master_class], teachers[_.teacher]) for _ in events_days_info[day]]
                 calendar[-1].append(DayInfo(day, info))
         while len(calendar[-1]) != 9:
             calendar[-1].append(DayInfo())
@@ -79,10 +91,10 @@ class Calendar:
         return MONTH[(self.month + 11) % 12], calendar
 
 
-def update_mouth(this, prev, next, mc):
+def update_mouth(this, prev, next, mc, teachers):
     filename = Config.TEMPLATES_FOLDER + '/{}/{}.html'
     c = Calendar(*this)
-    name, data = c.create(prev, next, mc)
+    name, data = c.create(prev, next, mc, teachers)
     cur_file = filename.format(*this)
     save_template('template_calendar.html', cur_file, 5, name=name, calendar=data, year=this[0])
 
@@ -103,8 +115,9 @@ class CalendarUpdater:
         self.mouths_old.sort()
         self.mouths_new.sort()
 
-    def update(self):
+    def update(self, mouth=None):
         mc = {_.id: _ for _ in MasterClassesTable.select_all()}
+        teachers = {_.id: _ for _ in TeachersTable.select_all()}
         ln_old, ln_new = len(self.mouths_old), len(self.mouths_new)
         for i in range(ln_new):
             this = self.mouths_new[i]
@@ -116,5 +129,20 @@ class CalendarUpdater:
                 prev1 = self.mouths_old[idx - 1] if idx else (0, 0)
                 next1 = self.mouths_old[idx + 1] if idx + 1 < ln_old else (0, 0)
             prev2, next2 = self.mouths_new[i - 1] if i else (0, 0), self.mouths_new[i + 1] if i + 1 < ln_new else (0, 0)
-            if not found or prev1 != prev2 or next1 != next2:
-                update_mouth(this, prev2, next2, mc)
+            if mouth is None and (not found or prev1 != prev2 or next1 != next2) or \
+                    mouth == 'all' or type(mouth) == list and this in mouth:
+                update_mouth(this, prev2, next2, mc, teachers)
+
+
+def calendar_update_all():
+    c = CalendarUpdater()
+    years = YearsTable.select_all()
+    c.parse_mouths(years, years)
+    c.update('all')
+
+
+def calendar_update_mouths(mouths):
+    c = CalendarUpdater()
+    years = YearsTable.select_all()
+    c.parse_mouths(years, years)
+    c.update(mouths)

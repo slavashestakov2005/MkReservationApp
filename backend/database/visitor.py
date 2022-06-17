@@ -1,4 +1,5 @@
 from .database import Table, Row
+from datetime import datetime
 
 
 class Visitor(Row):
@@ -9,11 +10,13 @@ class Visitor(Row):
         name1       TEXT    NOT NULL                        (Фамилия)
         name2       TEXT    NOT NULL                        (Имя)
         vclass      TEXT    NOT NULL                        (Класс)
-        status      INT     NOT NULL                        (0 - Зарегистрирован; 1 - Оплачено; <... что-то ещё ...>)
+        status      INT     NOT NULL                        (Перечислено ниже)
+        payment     INT     NOT NULL
+        time        INT     NOT NULL
     """
-    fields = ['id', 'event', 'name1', 'name2', 'vclass', 'status']
-    SIGN_UP = 0
-    STATUSES = ['Зарегистрирован']
+    fields = ['id', 'event', 'name1', 'name2', 'vclass', 'status', 'payment', 'time']
+    SIGN_UP, PAID, NOT_PAID, ERROR = 0, 1, 2, 3
+    STATUSES = ['Зарегистрирован', 'Оплачено', 'Не оплачено', 'Ошибка']
 
     def __init__(self, row):
         Row.__init__(self, Visitor, row)
@@ -23,6 +26,9 @@ class Visitor(Row):
 
     def get_status(self):
         return Visitor.STATUSES[self.status]
+
+    def get_time(self):
+        return datetime.fromtimestamp(self.time).strftime('%Y.%m.%d %H:%M:%S')
 
 
 class VisitorsTable:
@@ -37,12 +43,18 @@ class VisitorsTable:
         "name2"	TEXT NOT NULL,
         "vclass"	TEXT NOT NULL,
         "status"	INTEGER NOT NULL,
+        "payment"	INTEGER NOT NULL,
+        "time"	INTEGER NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
         );''')
 
     @staticmethod
     def select_all() -> list:
         return Table.select_list(VisitorsTable.table, Visitor)
+
+    @staticmethod
+    def select(id: int) -> Visitor:
+        return Table.select_one(VisitorsTable.table, Visitor, 'id', id)
 
     @staticmethod
     def select_by_data(visitor: Visitor) -> Visitor:
@@ -56,3 +68,7 @@ class VisitorsTable:
     @staticmethod
     def insert(visitor: Visitor) -> None:
         return Table.insert(VisitorsTable.table, visitor)
+
+    @staticmethod
+    def update(visitor: Visitor) -> None:
+        return Table.update(VisitorsTable.table, visitor)

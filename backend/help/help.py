@@ -1,5 +1,6 @@
 import os
 import re
+from datetime import datetime
 from flask import render_template
 from .splithtml import SplitFile
 from ..config import Config
@@ -59,3 +60,7 @@ MONTH = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май',
 
 def mouth_name(month):
     return MONTH[month]
+
+
+def unix_time():
+    return int(datetime.now().timestamp())

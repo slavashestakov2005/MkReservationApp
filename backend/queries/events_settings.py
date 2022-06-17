@@ -121,7 +121,7 @@ def add_event():
         return render_template(TEMPLATE, error_add_event='Событие не может столько стоить', **params())
     if date[0] < 2022 or date[0] > 2100:
         return render_template(TEMPLATE, error_add_event='Событие не может быть запланировано на такую дату', **params())
-    ev = Event([None, teacher, master_class, places, cost, start])
+    ev = Event([None, teacher, master_class, places, 0, cost, start])
     EventsTable.insert(ev)
     calendar_update_mouths([ev.mouth()])
     return render_template(TEMPLATE, error_add_event='Событие добавлено', **params())

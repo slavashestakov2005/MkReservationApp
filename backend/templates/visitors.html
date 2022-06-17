@@ -26,8 +26,8 @@
             <p class="places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
             <script>choice_color(document, {{ info.places - info.booked }});</script>
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-6">
-            <center><h2>Регистрация</h2>
+        <div class="col-lg-4 col-md-6 col-sm-6"><center>
+           <h2>Регистрация</h2>
             <form action="add_visitor" method="post">
                 <p class="invisible"><input type="text" name="event" value="{{ event.id }}" hidden></p>
                 <p><input type="text" name="name1" placeholder="Фамилия ребёнка"></p>
@@ -36,9 +36,11 @@
                 {% if error_add_visitor %} <p class="error">[ {{ error_add_visitor }} ]</p>
                 {% endif %}
                 <input type="submit" value="Сохранить">
-            </form></center>
-            {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>{% endif %}
-        </div>
+            </form>
+            {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>
+            {% elif msg %}<p class="error">{{ msg }}</p>
+            {% endif %}
+        </center></div>
     {% elif msg %}
         <div class="col-12"><center><p class="error">{{ msg }}</p></center></div>
     {% else %}

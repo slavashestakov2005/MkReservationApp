@@ -39,6 +39,8 @@
                             <td>Имя</td>
                             <td>Класс</td>
                             <td>Статус</td>
+                            <td>Платёж</td>
+                            <td>Время</td>
                         </tr>
                         {% for visitor in data %}
                             <tr>
@@ -47,10 +49,15 @@
                                 <td>{{ visitor.name2 }}</td>
                                 <td>{{ visitor.vclass }}</td>
                                 <td>{{ visitor.get_status() }}</td>
+                                <td>{{ visitor.payment }}</td>
+                                <td>{{ visitor.get_time() }}</td>
                             </tr>
                         {% endfor %}
                     </table>
                 </div></div></div>
+                <div class="row"><div class="col-12"><center>
+                    <a href="update_visitors?id={{ event.id }}">Обновить</a>
+                </center></div></div>
             {% endif %}
             </center>
         </div>

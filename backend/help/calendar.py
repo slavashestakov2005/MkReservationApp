@@ -25,6 +25,9 @@ class EventInfo:
         d = timedelta(minutes=delta)
         return (s + d).time().strftime(template)
 
+    def receipt_description(self):
+        return '{} {} {} - {}'.format(self.name, self.date, self.start, self.end)
+
 
 class DayInfo:
     def __init__(self, day=0, events=None):

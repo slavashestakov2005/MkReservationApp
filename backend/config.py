@@ -16,6 +16,8 @@ class Config:
     MAIL_PASSWORD = None
     ADMINS = ['iti.univers106@gmail.com']
 
+    EVENT_CLOSING = 24 * 60 * 60
+
     TINKOFF_API_URL = 'https://securepay.tinkoff.ru/v2/'
     TERMINAL_KEY = 'TinkoffBankTest'        # input('Ваш Tinkoff terminal key: ')
     TERMINAL_PASSWORD = 'TinkoffBankTest'   # input('Ваш Tinkoff пароль: ')

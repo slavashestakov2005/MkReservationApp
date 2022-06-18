@@ -16,6 +16,7 @@ function popover_start(elem){
         function(data) {
             xhr = null;
             content_color = content_color.replace('_',  get_color_for_places(data['value']));
+            if (data['closing']) template = template.replace('><!-- put is_closing -->', 'class="invisible">');
             elem.popover({
                 trigger: 'manual',
                 html: true,

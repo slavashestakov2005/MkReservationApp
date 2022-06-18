@@ -108,6 +108,7 @@ def add_event():
         date = [int(_) for _ in request.form['date'].split('-')]
         time = [int(_) for _ in request.form['time'].split(':')]
         start = int(datetime(*date, *time).timestamp())
+        classes = Event.parse_classes(request.form['classes'])
     except Exception:
         return render_template(TEMPLATE, error_add_event='Поля заполнены не правильно', **params())
 
@@ -121,7 +122,7 @@ def add_event():
         return render_template(TEMPLATE, error_add_event='Событие не может столько стоить', **params())
     if date[0] < 2022 or date[0] > 2100:
         return render_template(TEMPLATE, error_add_event='Событие не может быть запланировано на такую дату', **params())
-    ev = Event([None, teacher, master_class, places, 0, cost, start])
+    ev = Event([None, teacher, master_class, places, 0, cost, start, classes])
     EventsTable.insert(ev)
     calendar_update_mouths([ev.mouth()])
     return render_template(TEMPLATE, error_add_event='Событие добавлено', **params())
@@ -139,6 +140,7 @@ def edit_event():
         cost = int(request.form['cost']) if request.form['cost'] else None
         date = [int(_) for _ in request.form['date'].split('-')] if request.form['date'] else 0
         time = [int(_) for _ in request.form['time'].split(':')] if request.form['time'] else 0
+        classes = Event.parse_classes(request.form['classes']) if request.form['classes'] else ''
     except Exception:
         return render_template(TEMPLATE, error_edit_event='Поля заполнены не правильно', **params())
 
@@ -171,6 +173,8 @@ def edit_event():
         event.start = int(datetime(*date, *list(map(int, old_time[1].split(':')))).timestamp())
     elif time != 0:
         event.start = int(datetime(*list(map(int, old_time[0].split('.'))), *time).timestamp())
+    if classes:
+        event.classes = classes
     EventsTable.update(event)
     new_mouth = event.mouth()
     if old_mouth != new_mouth:

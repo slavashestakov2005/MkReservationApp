@@ -44,7 +44,7 @@
                             <p>Стоимость: {{ event.cost }} &#8381;</p>
                             <p><!-- put color of places here -->Осталось мест: <!-- put empty places here --> / {{ event.places }}</p>
                             <center>
-                                <p><a href="../visitors?event={{ event.id }}" onclick="visit(document, '../visitors?event={{ event.id }}')">Записаться</a></p>
+                                <p><a href="../visitors?event={{ event.id }}" onclick="visit(document, '../visitors?event={{ event.id }}')"><!-- put is_closing -->Записаться</a></p>
                                 <p><a href="../show_visitors?event={{ event.id }}" onclick="visit(document, '../show_visitors?event={{ event.id }}')">Записавшиеся</a></p>
                             </center>
                         </div>

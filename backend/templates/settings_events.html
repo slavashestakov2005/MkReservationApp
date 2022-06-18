@@ -85,6 +85,7 @@
                         <td>Бронь</td>
                         <td>Цена (&#8381;)</td>
                         <td>Начало</td>
+                        <td>Классы</td>
                     </tr>
                     {% for now in e %}
                     <tr>
@@ -95,6 +96,7 @@
                         <td>{{ now.booked }}</td>
                         <td>{{ now.cost }}</td>
                         <td>{{ now.date() }}</td>
+                        <td>{{ now.get_classes() }}</td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -108,6 +110,7 @@
                 <p><input type="text" name="places" placeholder="Кол-во мест"></p>
                 <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
                 <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
+                <p><textarea class="textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
                 {% if error_add_event %} <p class="error">[ {{ error_add_event }} ]</p>
                 {% endif %}
                 <input type="submit" value="Сохранить">
@@ -122,6 +125,7 @@
                 <p><input type="text" name="places" placeholder="Кол-во мест"></p>
                 <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
                 <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
+                <p><textarea class="textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
                 <p>Если поле оставить пустым, то данные не изменятся.</p>
                 <p>(Дату и время иожно менять независимо)</p>
                 {% if error_edit_event %} <p class="error">[ {{ error_edit_event }} ]</p>

@@ -44,6 +44,10 @@ def get_info(event: int):
     return event, EventInfo(event, mc, teacher)
 
 
+def is_closing(event: int):
+    return unix_time() + Config.EVENT_CLOSING > event.start
+
+
 @app.route('/visitors')
 @cross_origin()
 def visitors():
@@ -57,6 +61,8 @@ def visitors():
         return render_template(TEMPLATE1)
     if info.places <= info.booked:
         return render_template(TEMPLATE1, msg='Все места уже заняты :(')
+    if is_closing(ev):
+        return render_template(TEMPLATE1, msg='Запись уже закончилась :(')
     return render_template(TEMPLATE1, event=ev, info=info)
 
 
@@ -79,10 +85,14 @@ def add_visitor():
         return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Поля заполнены не правильно')
 
     visitor = Visitor([None, info.id, name1, name2, cls, Visitor.SIGN_UP, -1, unix_time()])
+    if is_closing(ev):
+        return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Запись уже закончилась')
     if not VisitorsTable.select_by_data(visitor).__is_none__:
         return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Такой ребёнок уже зарегистрирован')
     if info.places <= info.booked:
         return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Все места заняты')
+    if not ev.can_visit(cls):
+        return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Такому классу нельзя записаться')
     VisitorsTable.insert(visitor)
     visitor = VisitorsTable.select_by_data(visitor)
     desc = 'Событие: {} Ребёнок: {} {} {}'.format(info.receipt_description(), name1, name2, cls)
@@ -153,7 +163,7 @@ def visitors_count():
     event = EventsTable.select(event)
     if event.__is_none__:
         return forbidden_error()
-    return jsonify({'status': 'OK', 'value': event.places - event.booked})
+    return jsonify({'status': 'OK', 'value': event.places - event.booked, 'closing': is_closing(event)})
 
 
 @app.route('/t_success')

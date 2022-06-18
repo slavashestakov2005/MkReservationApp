@@ -13,8 +13,9 @@ class Event(Row):
         booked          INR     NOT NULL
         cost            INT     NOT NULL
         start           INT     NOT NULL                        (Unix, секунды)
+        classes         TEXT    NOT NULL
     """
-    fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'start']
+    fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'start', 'classes']
 
     def __init__(self, row):
         Row.__init__(self, Event, row)
@@ -33,6 +34,21 @@ class Event(Row):
     def mouth_name(self):
         return mouth_name(self.mouth()[1] - 1)
 
+    @staticmethod
+    def parse_classes(text: str):
+        return ' | '.join(_.strip() for _ in text.strip().strip('|').split('|'))
+
+    def get_classes(self):
+        return self.classes if self.classes else 'Все'
+
+    def can_visit(self, cls: str):
+        if not self.classes:
+            return True
+        for x in self.classes.split(' | '):
+            if cls == x or x.isdigit() and cls.startswith(x):
+                return True
+        return False
+
 
 class EventsTable:
     table = "event"
@@ -47,6 +63,7 @@ class EventsTable:
         "booked"	INTEGER NOT NULL,
         "cost"	INTEGER NOT NULL,
         "start"	INTEGER NOT NULL,
+        "classes"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
         );''')
 

@@ -64,3 +64,11 @@ def mouth_name(month):
 
 def unix_time():
     return int(datetime.now().timestamp())
+
+
+def generate_filename(old_name, new_name):
+    parts = [x.lower() for x in old_name.rsplit('.', 1)]
+    if len(parts) < 2 or parts[1] not in Config.ALLOWED_EXTENSIONS:
+        return None
+    tail = new_name + '.' + parts[1]
+    return Config.UPLOAD_FOLDER + '/Images/' + tail, tail

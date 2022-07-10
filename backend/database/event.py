@@ -12,10 +12,11 @@ class Event(Row):
         places          INT     NOT NULL
         booked          INR     NOT NULL
         cost            INT     NOT NULL
+        revenue         INT     NOT NULL
         start           INT     NOT NULL                        (Unix, секунды)
         classes         TEXT    NOT NULL
     """
-    fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'start', 'classes']
+    fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'revenue', 'start', 'classes']
 
     def __init__(self, row):
         Row.__init__(self, Event, row)
@@ -62,6 +63,7 @@ class EventsTable:
         "places"	INTEGER NOT NULL,
         "booked"	INTEGER NOT NULL,
         "cost"	INTEGER NOT NULL,
+        "revenue"	INTEGER NOT NULL,
         "start"	INTEGER NOT NULL,
         "classes"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)

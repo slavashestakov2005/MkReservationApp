@@ -10,8 +10,9 @@ class MasterClass(Row):
         photo           TEXT    NOT NULL
         description     TEXT    NOT NULL
         duration        INT                                 (минуты)
+        file            TEXT    NOT NULL
     """
-    fields = ['id', 'name', 'photo', 'description', 'duration']
+    fields = ['id', 'name', 'photo', 'description', 'duration', 'file']
 
     def __init__(self, row):
         Row.__init__(self, MasterClass, row)
@@ -31,6 +32,7 @@ class MasterClassesTable:
         "photo"	TEXT NOT NULL,
         "description"	TEXT NOT NULL,
         "duration"	INTEGER NOT NULL,
+        "file"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
         );''')
 
@@ -41,6 +43,10 @@ class MasterClassesTable:
     @staticmethod
     def select(id: int) -> MasterClass:
         return Table.select_one(MasterClassesTable.table, MasterClass, 'id', id)
+
+    @staticmethod
+    def select_last() -> MasterClass:
+        return Table.select_last(MasterClassesTable.table, MasterClass)
 
     @staticmethod
     def insert(mc: MasterClass) -> None:

@@ -9,11 +9,9 @@
             {% for month in info.months %}
             <div class="card" onclick="clickCard(document, {{ month.id }})">
                 <center><p><b>{{ month.name }}</b></p></center>
-                <p>Проведено мастер-классов: {{ month.mc_count }}.</p>
-                <p>Ребёнка-часов: {{ month.visitors }}.</p>
-                <p>Детей поучаствовало: {{ month.unique_visitors }}.</p>
-                <p>Выручка: {{ month.revenue }}.</p>
-                <p>Прибыль: {{ month.profit }}.</p>
+                <p>Проведено мастер-классов: <!-- {{ month.id }}-mc_count -->{{ month.mc_count }}<!-- end -->.</p>
+                <p>Поучаствовало детей: <!-- {{ month.id }}-visitors -->{{ month.visitors }}<!-- end -->.</p>
+                <p>Выручка: <!-- {{ month.id }}-revenue -->{{ month.revenue }}<!-- end -->.</p>
             </div>
             {% endfor %}
         </div>

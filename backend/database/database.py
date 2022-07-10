@@ -135,6 +135,10 @@ class Table:
                                                  .format(table_name, start, field, end))]
 
     @staticmethod
+    def select_last(table_name: str, cls, field='id') -> Row:
+        return cls(DataBase.execute_one("SELECT * FROM " + table_name + ' ORDER BY ' + field + ' DESC LIMIT 1'))
+
+    @staticmethod
     def update(table_name: str, value, *args) -> None:
         table_name = Table.correct_table_name(table_name)
         if not args or not len(args):

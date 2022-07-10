@@ -1,8 +1,8 @@
 from backend import app
 from flask import render_template, request, jsonify
 from flask_cors import cross_origin
-from ..help import forbidden_error, empty_checker, unix_time, EventInfo, TinkoffCard
-from ..database import Visitor, VisitorsTable, EventsTable, MasterClassesTable, TeachersTable
+from ..help import forbidden_error, empty_checker, unix_time, EventInfo, TinkoffCard, SplitFile
+from ..database import Visitor, VisitorsTable, EventsTable, MasterClassesTable, TeachersTable, YearsTable
 from ..config import Config
 
 '''
@@ -10,6 +10,7 @@ from ..config import Config
                         TEMPLATE2           Имя шиблона со списком участников.
                         get_status(s)       Переводит статус Tinkoff -> наш.
                         get_info(e)         Получает описание события.
+                        is_closing(e)       Проверяет, что до события ещё осталось время.
     /visitors           visitors()          Пересылает на страницу регистрации.
     /add_visitor        add_visitor()       Регистрирует участника на событие.
     /show_visitors      edit_user()         Пересылает на страницу со списком зарегистрированных.
@@ -132,9 +133,13 @@ def update_visitors():
         return forbidden_error()
 
     ev, info = get_info(event)
-    ev_update = False
+    ev_update, new_visitors, new_revenue = False, 0, 0
     if info is None:
         return render_template(TEMPLATE2)
+    date = ev.date().split('.')
+    y, m = int(date[0]), int(date[1]) - 1
+    year = YearsTable.select(y)
+    old_visitors, old_revenue = year.get_visitors(m) - ev.revenue // ev.cost, year.get_revenue(m) - ev.revenue
     visitors = VisitorsTable.select_by_event(ev.id)
     for visitor in visitors:
         error, status = TinkoffCard.get_state(visitor.payment)
@@ -142,13 +147,27 @@ def update_visitors():
         if status and status != visitor.status:
             visitor.status = status
             VisitorsTable.update(visitor)
+        visitor.status = Visitor.PAID
+        if visitor.status == Visitor.PAID:
+            new_visitors += 1
+            new_revenue += ev.cost
         if visitor.status == Visitor.SIGN_UP and unix_time() - visitor.time > Config.EXPIRE_TIME:
             visitor.status = Visitor.NOT_PAID
             VisitorsTable.update(visitor)
             ev.booked -= 1
             ev_update = True
+    if ev.revenue != new_revenue:
+        ev.revenue = new_revenue
+        ev_update = True
     if ev_update:
         EventsTable.update(ev)
+        year.set_visitors(m, old_visitors + new_visitors)
+        year.set_revenue(m, old_revenue + new_revenue)
+        YearsTable.update(year)
+        f = SplitFile(Config.TEMPLATES_FOLDER + '/' + str(y) + '/main.html')
+        f.insert_after_comment(' {}-{} '.format(m + 1, 'visitors'), str(year.get_visitors(m)))
+        f.insert_after_comment(' {}-{} '.format(m + 1, 'revenue'), str(year.get_revenue(m)))
+        f.save_file()
     return render_template(TEMPLATE2, data=VisitorsTable.select_by_event(info.id), event=ev, info=info)
 
 

@@ -3,11 +3,14 @@ from flask import render_template, request
 from flask_cors import cross_origin
 from flask_login import login_required
 from datetime import datetime
-from ..help import empty_checker, calendar_update_all, calendar_update_mouths
-from ..database import MasterClassesTable, MasterClass, EventsTable, Event, TeachersTable
+from ..help import empty_checker, calendar_update_all, calendar_update_mouths, generate_filename, SplitFile
+from ..database import MasterClassesTable, MasterClass, EventsTable, Event, TeachersTable, YearsTable
+from ..config import Config
 '''
                     TEMPLATE            Имя шиблона с настройкой мастер-классов и событий.
                     params()            Постоянные параметры этого шаблона.
+                    get_image_name()    Генерирует имя файла для логотипа МК.
+                    update_mc_count()   Обновляет количество событий в месяце.
     /events         events()            Пересылает на страницу с этим шаблоном.
     /add_mc         add_mc()            Создаёт мастер-класс.
     /edit_mc        edit_mc()           Редактирует мастер-класс.
@@ -23,6 +26,25 @@ TEMPLATE = 'settings_events.html'
 
 def params():
     return {'mc': MasterClassesTable.select_all(), 'e': EventsTable.select_all()}
+
+
+def get_image_name(new, default='logo.png'):
+    if request.form.get('is_file') is not None:
+        file = request.files['file-file']
+        file_name, tail = generate_filename(file.filename, str(new))
+        file.save(file_name)
+        return tail
+    tail = request.form['file-name']
+    return tail if tail else default
+
+
+def update_mc_count(mouth: list, dv: int = 1):
+    year = YearsTable.select(mouth[0])
+    year.set_mc_count(mouth[1] - 1, year.get_mc_count(mouth[1] - 1) + dv)
+    YearsTable.update(year)
+    f = SplitFile(Config.TEMPLATES_FOLDER + '/' + str(mouth[0]) + '/main.html')
+    f.insert_after_comment(' {}-{} '.format(mouth[1], 'mc_count'), str(year.get_mc_count(mouth[1] - 1)))
+    f.save_file()
 
 
 @app.route('/events')
@@ -46,8 +68,11 @@ def add_mc():
 
     if duration < 1 or duration > 240:
         return render_template(TEMPLATE, error_add_mc='Мастер-класс не может столько длиться', **params())
-    mc = MasterClass([None, name, '', description, duration])
+    mc = MasterClass([None, name, '', description, duration, ''])
     MasterClassesTable.insert(mc)
+    mc = MasterClassesTable.select_last()
+    mc.file = get_image_name(mc.id)
+    MasterClassesTable.update(mc)
     return render_template(TEMPLATE, error_add_mc='Мастер-класс добавлен', **params())
 
 
@@ -74,6 +99,7 @@ def edit_mc():
         mc.description = description
     if duration:
         mc.duration = duration
+    mc.file = get_image_name(mc.id, mc.file)
     MasterClassesTable.update(mc)
     calendar_update_all()
     return render_template(TEMPLATE, error_edit_mc='Мастер-класс изменён', **params())
@@ -122,9 +148,11 @@ def add_event():
         return render_template(TEMPLATE, error_add_event='Событие не может столько стоить', **params())
     if date[0] < 2022 or date[0] > 2100:
         return render_template(TEMPLATE, error_add_event='Событие не может быть запланировано на такую дату', **params())
-    ev = Event([None, teacher, master_class, places, 0, cost, start, classes])
+    ev = Event([None, teacher, master_class, places, 0, cost, 0, start, classes])
+    m = ev.mouth()
     EventsTable.insert(ev)
-    calendar_update_mouths([ev.mouth()])
+    calendar_update_mouths([m])
+    update_mc_count(m)
     return render_template(TEMPLATE, error_add_event='Событие добавлено', **params())
 
 
@@ -179,6 +207,8 @@ def edit_event():
     new_mouth = event.mouth()
     if old_mouth != new_mouth:
         calendar_update_mouths([old_mouth, new_mouth])
+        update_mc_count(old_mouth, -1)
+        update_mc_count(new_mouth)
     else:
         calendar_update_mouths([old_mouth])
     return render_template(TEMPLATE, error_edit_event='Событие изменено', **params())
@@ -197,5 +227,7 @@ def delete_event():
     if event.__is_none__:
         return render_template(TEMPLATE, error_delete_event='Не верный ID события', **params())
     EventsTable.delete(event)
-    calendar_update_mouths([event.mouth()])
+    m = event.mouth()
+    calendar_update_mouths([m])
+    update_mc_count(m, -1)
     return render_template(TEMPLATE, error_delete_event='Событие удалено', **params())

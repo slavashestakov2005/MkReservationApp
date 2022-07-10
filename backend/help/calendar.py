@@ -10,7 +10,7 @@ class EventInfo:
         self.id, self.places, self.cost, self.booked = event.id, event.places, event.cost, event.booked
         self.date, self.start = EventInfo.start(event.start)
         self.end = EventInfo.end(event.start, mc.duration)
-        self.name, self.description = mc.name, mc.get_html()
+        self.name, self.description, self.file = mc.name, mc.get_html(), mc.file
         self.teacher = teacher.name()
 
     @staticmethod
@@ -40,15 +40,15 @@ class DayInfo:
 
 
 class MonthInfo:
-    def __init__(self, m):
+    def __init__(self, m, year):
         self.id, self.name = m + 1, mouth_name(m)
-        self.mc_count, self.visitors, self.unique_visitors, self.revenue, self.profit = 0, 0, 0, 0, 0
+        self.mc_count, self.visitors, self.revenue = year.get_mc_count(m), year.get_visitors(m), year.get_revenue(m)
 
 
 class YearInfo:
     def __init__(self, year):
         self.year = year.year
-        self.months = [MonthInfo(m) for m in range(12) if year.exists(m)]
+        self.months = [MonthInfo(m, year) for m in range(12) if year.exists(m)]
 
 
 class Calendar:

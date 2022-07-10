@@ -85,7 +85,7 @@ def add_year():
         return render_template(TEMPLATE, error_add_year='Такой год уже есть', **params())
     if year < 2022 or year > 2100:
         return render_template(TEMPLATE, error_add_year='Такой год создать нельзя', **params())
-    year = Year([year, Year.ALL_MONTHS])
+    year = Year([year, Year.ALL_MONTHS, Year.ZERO12, Year.ZERO12, Year.ZERO12])
     old = YearsTable.select_all()
     YearsTable.insert(year)
     create_year_(year.year, old)

@@ -10,7 +10,7 @@
 <center>
     <div class="row col-12">
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col-lg-7 col-md-12 col-sm-12">
             <h1>Мастер-классы</h1>
             <p>Типы мастер-классов, можно повторять несколько раз.</p>
             <br>
@@ -23,6 +23,7 @@
                         <td>Название</td>
                         <td>Описание</td>
                         <td>Время (мин)</td>
+                        <td>Фото</td>
                     </tr>
                     {% for now in mc %}
                         <tr>
@@ -30,6 +31,7 @@
                             <td>{{ now.name }}</td>
                             <td class="markdown-text"><div>{{ now.description }}</div><div class="markdown-content">{{ now.get_html() }}</div></td>
                             <td>{{ now.duration }}</td>
+                            <td><a href="../Images/{{ now.file }}" target="_blank">{{ now.file }}</a></td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -37,10 +39,19 @@
             <br>
             <br>
             <h2>Создать</h2>
-            <form action="add_mc" method="post">
+            <form action="add_mc" method="post" enctype="multipart/form-data">
                 <p><input type="text" name="name" placeholder="Название"></p>
                 <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
+                <div class="chekable">
+                    <p><input type="checkbox" name="is_file" value="is_file">Загрузить картинку</p>
+                    <div>
+                        <p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p>
+                    </div>
+                    <div>
+                        <p><input type="text" name="file-name" placeholder="Загруженный файл"></p>
+                    </div>
+                </div>
                 {% if error_add_mc %} <p class="error">[ {{ error_add_mc }} ]</p>
                 {% endif %}
                 <input type="submit" value="Сохранить">
@@ -48,11 +59,20 @@
             <br>
             <br>
             <h2>Редактировать</h2>
-            <form action="edit_mc" method="post">
+            <form action="edit_mc" method="post" enctype="multipart/form-data">
                 <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
                 <p><input type="text" name="name" placeholder="Название"></p>
                 <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
+                <div class="chekable">
+                    <p><input type="checkbox" name="is_file" value="is_file">Загрузить картинку</p>
+                    <div>
+                        <p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p>
+                    </div>
+                    <div>
+                        <p><input type="text" name="file-name" placeholder="Загруженный файл"></p>
+                    </div>
+                </div>
                 <p>Если поле оставить пустым, то данные не изменятся.</p>
                 {% if error_edit_mc %} <p class="error">[ {{ error_edit_mc }} ]</p>
                 {% endif %}
@@ -69,7 +89,7 @@
             </form>
         </div>
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col-lg-5 col-md-12 col-sm-12">
             <h1>События</h1>
             <p>Проведение самого мастер-класса, повторяется только раз.</p>
             <br>
@@ -84,6 +104,7 @@
                         <td>Мест</td>
                         <td>Бронь</td>
                         <td>Цена (&#8381;)</td>
+                        <td>Выр.</td>
                         <td>Начало</td>
                         <td>Классы</td>
                     </tr>
@@ -95,6 +116,7 @@
                         <td>{{ now.places }}</td>
                         <td>{{ now.booked }}</td>
                         <td>{{ now.cost }}</td>
+                        <td>{{ now.revenue }}</td>
                         <td>{{ now.date() }}</td>
                         <td>{{ now.get_classes() }}</td>
                     </tr>
@@ -145,6 +167,6 @@
     </div>
 </center>
 
-<script>listenInput(document);showMD(document);</script>
+<script>listenInput(document);showMD(document);listenCheckbox(document);</script>
 
 {% endblock %}

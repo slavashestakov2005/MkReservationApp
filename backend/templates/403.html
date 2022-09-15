@@ -1,19 +1,13 @@
 {% extends "page1.html" %}
-
-{% block header %}
-<a href="/">МК</a>
-/
-Ошибка 403
-{% endblock %}
-
 {% block content %}
+
 <center>
     <h1>Ошибка доступа :(</h1>
     {% if anon %} <p>Для просмотра данной страницы необходимо зайти на сайт.</p>
     {% else %}
         <p>У вас недостаточно прав для просмотра данной страницы.</p>
     {% endif %}
-    <p><font color="red">[ Ошибка 403 ]</font></p>
+    <p class="error">[ Ошибка 403 ]</p>
 </center>
 
 {% endblock %}

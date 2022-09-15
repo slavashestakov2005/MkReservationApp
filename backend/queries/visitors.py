@@ -1,6 +1,7 @@
 from backend import app
 from flask import render_template, request, jsonify
 from flask_cors import cross_origin
+from flask_login import login_required
 from ..help import forbidden_error, empty_checker, unix_time, EventInfo, TinkoffCard, SplitFile
 from ..database import Visitor, VisitorsTable, EventsTable, MasterClassesTable, TeachersTable, YearsTable
 from ..config import Config
@@ -81,11 +82,12 @@ def add_visitor():
         name1 = request.form['name1']
         name2 = request.form['name2']
         cls = request.form['class']
-        empty_checker(name1, name2, cls)
+        telephone = request.form['telephone']
+        empty_checker(name1, name2, cls, telephone)
     except Exception:
         return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Поля заполнены не правильно')
 
-    visitor = Visitor([None, info.id, name1, name2, cls, Visitor.SIGN_UP, -1, unix_time()])
+    visitor = Visitor([None, info.id, name1, name2, cls, Visitor.SIGN_UP, -1, unix_time(), telephone])
     if is_closing(ev):
         return render_template(TEMPLATE1, event=ev, info=info, error_add_visitor='Запись уже закончилась')
     if not VisitorsTable.select_by_data(visitor).__is_none__:
@@ -111,6 +113,7 @@ def add_visitor():
 
 
 @app.route('/show_visitors')
+@login_required
 @cross_origin()
 def show_visitors():
     try:
@@ -147,7 +150,6 @@ def update_visitors():
         if status and status != visitor.status:
             visitor.status = status
             VisitorsTable.update(visitor)
-        visitor.status = Visitor.PAID
         if visitor.status == Visitor.PAID:
             new_visitors += 1
             new_revenue += ev.cost

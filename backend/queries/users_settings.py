@@ -2,7 +2,7 @@ from backend import app, login
 from flask import render_template, redirect, request
 from flask_cors import cross_origin
 from flask_login import current_user, login_user, logout_user, login_required
-from ..help import empty_checker
+from ..help import empty_checker, parse_checkbox
 from ..database import TeachersTable, Teacher
 '''
     /login          login()             Вход пользователя.
@@ -81,9 +81,12 @@ def add_user():
 
     if not TeachersTable.select_by_login(u_login).__is_none__:
         return render_template(TEMPLATE, error_add_user='Такой логин занят', **params())
-    teacher = Teacher([None, name1, name2, name3, u_login, password])
+    teacher = Teacher([None, name1, name2, name3, u_login, password, ''])
     teacher.set_password(password)
     TeachersTable.insert(teacher)
+    teacher = TeachersTable.select_last()
+    teacher.file = parse_checkbox(teacher.id, 'face.png', folder='Teacher/')
+    TeachersTable.update(teacher)
     return render_template(TEMPLATE, error_add_user='Пользователь добавлен', **params())
 
 
@@ -117,6 +120,7 @@ def edit_user():
         teacher.name3 = name3
     if password1 and password2:
         teacher.set_password(password2)
+    teacher.file = parse_checkbox(teacher.id, teacher.file, folder='Teacher/')
     TeachersTable.update(teacher)
     return render_template(TEMPLATE, error_edit_user='Пользователь изменён', **params())
 

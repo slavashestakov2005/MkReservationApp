@@ -3,16 +3,34 @@ from flask import render_template
 from flask_cors import cross_origin
 from jinja2 import TemplateNotFound
 from ..help import not_found_error
+from ..database import EventsTable, MasterClassesTable, TeachersTable
 '''
     /               index()             Возвращает стартовую страницу.
     /<path>         static_file(path)   Возвращает страницу или файл.
 '''
 
 
+def index_params():
+    events = EventsTable.select_all()
+    mc = {_.id : _ for _ in MasterClassesTable.select_all()}
+    return {'events': events, 'mc': mc}
+
+
+def teacher_params():
+    return {'teachers': TeachersTable.select_all()}
+
+
+@app.route('/index.html')
 @app.route('/')
 @cross_origin()
 def index():
-    return render_template('index.html')
+    return render_template('index.html', **index_params())
+
+
+@app.route('/Info/teachers.html')
+@cross_origin()
+def teachers():
+    return render_template('Info/teachers.html', **teacher_params())
 
 
 @app.route('/<path:path>')

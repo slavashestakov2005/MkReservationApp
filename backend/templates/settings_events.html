@@ -1,12 +1,6 @@
 {% extends "page1.html" %}
-
-{% block header %}
-<a href="/">МК</a>
-/
-События
-{% endblock %}
-
 {% block content %}
+
 <center>
     <div class="row col-12">
 
@@ -21,6 +15,7 @@
                     <tr>
                         <td>ID</td>
                         <td>Название</td>
+                        <td>Краткое описание</td>
                         <td>Описание</td>
                         <td>Время (мин)</td>
                         <td>Фото</td>
@@ -29,7 +24,8 @@
                         <tr>
                             <td>{{ now.id }}</td>
                             <td>{{ now.name }}</td>
-                            <td class="markdown-text"><div>{{ now.description }}</div><div class="markdown-content">{{ now.get_html() }}</div></td>
+                            <td class="js-md-double-click-popover"><div>{{ now.short_desc }}</div><div class="invisible">{{ now.get_short_html() }}</div></td>
+                            <td class="js-md-double-click-popover"><div>{{ now.description }}</div><div class="invisible">{{ now.get_html() }}</div></td>
                             <td>{{ now.duration }}</td>
                             <td><a href="../Images/{{ now.file }}" target="_blank">{{ now.file }}</a></td>
                         </tr>
@@ -41,20 +37,17 @@
             <h2>Создать</h2>
             <form action="add_mc" method="post" enctype="multipart/form-data">
                 <p><input type="text" name="name" placeholder="Название"></p>
-                <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
+                <p><textarea class="js-textarea" name="short_description" placeholder="Краткое описание на Markdown"></textarea></p>
+                <p><textarea class="js-textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
-                <div class="chekable">
-                    <p><input type="checkbox" name="is_file" value="is_file">Загрузить картинку</p>
-                    <div>
-                        <p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p>
-                    </div>
-                    <div>
-                        <p><input type="text" name="file-name" placeholder="Загруженный файл"></p>
-                    </div>
+                <div class="js-checkbox">
+                    <p><input type="checkbox" name="is_file" value="is_file"> Загрузить картинку</p>
+                    <div><p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p></div>
+                    <div><p><input type="text" name="file-name" placeholder="Загруженный файл"></p></div>
                 </div>
                 {% if error_add_mc %} <p class="error">[ {{ error_add_mc }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
             <br>
             <br>
@@ -62,21 +55,18 @@
             <form action="edit_mc" method="post" enctype="multipart/form-data">
                 <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
                 <p><input type="text" name="name" placeholder="Название"></p>
-                <p><textarea class="textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
+                <p><textarea class="js-textarea" name="short_description" placeholder="Краткое описание на Markdown"></textarea></p>
+                <p><textarea class="js-textarea" name="description" placeholder="Описание на Markdown"></textarea></p>
                 <p><input type="text" name="duration" placeholder="Время (мин)"></p>
-                <div class="chekable">
-                    <p><input type="checkbox" name="is_file" value="is_file">Загрузить картинку</p>
-                    <div>
-                        <p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p>
-                    </div>
-                    <div>
-                        <p><input type="text" name="file-name" placeholder="Загруженный файл"></p>
-                    </div>
+                <div class="js-checkbox">
+                    <p><input type="checkbox" name="is_file" value="is_file"> Загрузить картинку</p>
+                    <div><p>Загрузить файл: <input type="file" name="file-file" accept="image/*"></p></div>
+                    <div><p><input type="text" name="file-name" placeholder="Загруженный файл"></p></div>
                 </div>
                 <p>Если поле оставить пустым, то данные не изменятся.</p>
                 {% if error_edit_mc %} <p class="error">[ {{ error_edit_mc }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
             <br>
             <br>
@@ -85,7 +75,7 @@
                 <p><input type="text" name="id" placeholder="ID мастер-классса"></p>
                 {% if error_delete_mc %} <p class="error">[ {{ error_delete_mc }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
         </div>
 
@@ -114,7 +104,7 @@
                         <td>{{ now.teacher }}</td>
                         <td>{{ now.master_class }}</td>
                         <td>{{ now.places }}</td>
-                        <td>{{ now.booked }}</td>
+                        <td><a href="/show_visitors?event={{ now.id }}">{{ now.booked }}</a></td>
                         <td>{{ now.cost }}</td>
                         <td>{{ now.revenue }}</td>
                         <td>{{ now.date() }}</td>
@@ -132,10 +122,10 @@
                 <p><input type="text" name="places" placeholder="Кол-во мест"></p>
                 <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
                 <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
-                <p><textarea class="textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
+                <p><textarea class="js-textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
                 {% if error_add_event %} <p class="error">[ {{ error_add_event }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
             <br>
             <br>
@@ -147,12 +137,12 @@
                 <p><input type="text" name="places" placeholder="Кол-во мест"></p>
                 <p><input type="text" name="cost" placeholder="Стоимость (&#8381;)"></p>
                 <p><input type="date" name="date"> &nbsp; <input type="time" name="time"></p>
-                <p><textarea class="textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
+                <p><textarea class="js-textarea" name="classes" placeholder="Ограничения по классам (например: 3 | 2А | 2Б)"></textarea></p>
                 <p>Если поле оставить пустым, то данные не изменятся.</p>
                 <p>(Дату и время иожно менять независимо)</p>
                 {% if error_edit_event %} <p class="error">[ {{ error_edit_event }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
             <br>
             <br>
@@ -161,12 +151,12 @@
                 <p><input type="text" name="id" placeholder="ID события"></p>
                 {% if error_delete_event %} <p class="error">[ {{ error_delete_event }} ]</p>
                 {% endif %}
-                <input type="submit" value="Сохранить">
+                <input type="submit" class="form-control form-item" value="Сохранить">
             </form>
         </div>
     </div>
 </center>
 
-<script>listenInput(document);showMD(document);listenCheckbox(document);</script>
+<script>initTextArea();initMDDoubleClickPopover();initCheckbox();</script>
 
 {% endblock %}

@@ -1,13 +1,9 @@
-<a href="/">МК</a>
-/
-{{ info.year }}
-
 <center>
     <h1>{{ info.year }}</h1>
     <div class="container col-12">
         <div class="row justify-content-center">
             {% for month in info.months %}
-            <div class="card" onclick="clickCard(document, {{ month.id }})">
+            <div class="card" onclick="clickCard({{ month.id }})">
                 <center><p><b>{{ month.name }}</b></p></center>
                 <p>Проведено мастер-классов: <!-- {{ month.id }}-mc_count -->{{ month.mc_count }}<!-- end -->.</p>
                 <p>Поучаствовало детей: <!-- {{ month.id }}-visitors -->{{ month.visitors }}<!-- end -->.</p>

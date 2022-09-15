@@ -25,6 +25,9 @@ class Event(Row):
     def sort_by_start(event):
         return event.start
 
+    def short_date(self):
+        return datetime.fromtimestamp(self.start).strftime('%Y.%m.%d')
+
     def date(self):
         return datetime.fromtimestamp(self.start).strftime('%Y.%m.%d %H:%M')
 

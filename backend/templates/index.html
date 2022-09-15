@@ -1,15 +1,38 @@
 {% extends "page1.html" %}
-
-{% block header %}
-МК
-{% endblock %}
-
 {% block content %}
 
-... Тут могут быть какие-нибудь картинки ...
+<div class="itcss">
+	<div class="itcss__wrapper">
+		<div class="itcss__items">
+			<div class="itcss__item"><img src="../Images/img1.png" class="slider-image"></div>
+			<div class="itcss__item"><img src="../Images/img2.jfif" class="slider-image"></div>
+			<div class="itcss__item"><img src="../Images/img3.jpg" class="slider-image"></div>
+		</div>
+	</div>
+</div>
+<div class="small-white-line"></div>
+<div class="blue-line">
+	<h1 class="main-title">Мастер классы «Универс»</h1>
+</div>
+<div class="band row col-12">
+	{% for i in range(12) %}
+	{% for ev in events %}
+		{% set m = mc[ev.master_class] %}
+		<div class="band-item row col-lg-5 col-md-12 col-sm-12" onclick="go('/visitors?event={{ ev.id }}')">
+			<div class="container"><div class="row align-items-start">
+				<div class="col align-self-start">
+					<span class="band-course-title">{{ m.name }} ({{ ev.places }} человек)</span><br>
+					<span class="band-course-date">{{ ev.short_date() }} {{ ev.classes }}</span>
+				</div>
+				<div class="col align-self-end band-course-price">{{ ev.cost }} &#8381;<br>&nbsp;</div>
+				<div class="w-100"></div>
+				<div class="col-12 band-course-description js-md-content">{{ m.get_short_html() }}</div>
+			</div></div>
+		</div>
+	{% endfor %}
+	{% endfor %}
+</div>
 
-<br>
-<p>Такие работы у Вас могут получиться, скорее записывайтесь на мастер-классы!</p>
-<br>
+<script>initMDContent();initSlider();</script>
 
 {% endblock %}

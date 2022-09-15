@@ -31,7 +31,6 @@ class TinkoffCard:
 
     @staticmethod
     def __gen_result(data, *args):
-        print(data)
         error = data['ErrorCode']
         ans = [error]
         for arg in args:

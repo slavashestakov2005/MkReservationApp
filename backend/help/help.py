@@ -1,7 +1,7 @@
 import os
 import re
 from datetime import datetime
-from flask import render_template
+from flask import render_template, request
 from .splithtml import SplitFile
 from ..config import Config
 
@@ -30,10 +30,6 @@ def empty_checker(*args):
 
 
 FILES_TEMPLATE = '''{{% extends "page2.html" %}}
-{{% block header %}}
-{}
-{{% endblock %}}
-
 {{% block content %}}
 {}
 {{% endblock %}}
@@ -42,7 +38,7 @@ FILES_TEMPLATE = '''{{% extends "page2.html" %}}
 
 def save_template(template, filename, head_size=3, **data):
     s = correct_template(template, **data).split('\n')
-    t = FILES_TEMPLATE.format('\n'.join(s[:head_size]), '\n'.join(s[head_size:]))
+    t = FILES_TEMPLATE.format('\n'.join(s))
     with open(filename, 'w', encoding='UTF-8') as f:
         f.write(t)
 
@@ -66,9 +62,24 @@ def unix_time():
     return int(datetime.now().timestamp())
 
 
-def generate_filename(old_name, new_name):
+def current_mouth():
+    return list(map(int, datetime.now().strftime('%Y.%m').split('.')))
+
+
+def generate_filename(old_name, new_name, folder=''):
     parts = [x.lower() for x in old_name.rsplit('.', 1)]
     if len(parts) < 2 or parts[1] not in Config.ALLOWED_EXTENSIONS:
         return None
     tail = new_name + '.' + parts[1]
-    return Config.UPLOAD_FOLDER + '/Images/' + tail, tail
+    return Config.UPLOAD_FOLDER + '/Images/' + folder + tail, folder + tail
+
+
+def parse_checkbox(new_filename, default_filename, folder='', form_checkbox='is_file',
+                   form_file='file-file', form_name='file-name'):
+    if request.form.get(form_checkbox) is not None:
+        file = request.files[form_file]
+        file_name, tail = generate_filename(file.filename, str(new_filename), folder)
+        file.save(file_name)
+        return tail
+    tail = request.form[form_name]
+    return tail or default_filename

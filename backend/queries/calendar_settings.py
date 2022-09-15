@@ -8,6 +8,7 @@ from ..config import Config
 from ..database import YearsTable, Year
 from ..help import YearInfo, save_template, edit_template, CalendarUpdater
 '''
+                    [[maybe_unused]]
                     TEMPLATE                    Имя шиблона с настройкой пользователей.
                     update_pages_()             Обновляет списки годов.
                     update_years_(y, o, n)      Обновляет годовые файлы.

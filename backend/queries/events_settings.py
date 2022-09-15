@@ -3,7 +3,7 @@ from flask import render_template, request
 from flask_cors import cross_origin
 from flask_login import login_required
 from datetime import datetime
-from ..help import empty_checker, calendar_update_all, calendar_update_mouths, generate_filename, SplitFile
+from ..help import empty_checker, calendar_update_all, calendar_update_mouths, parse_checkbox, SplitFile
 from ..database import MasterClassesTable, MasterClass, EventsTable, Event, TeachersTable, YearsTable
 from ..config import Config
 '''
@@ -28,16 +28,6 @@ def params():
     return {'mc': MasterClassesTable.select_all(), 'e': EventsTable.select_all()}
 
 
-def get_image_name(new, default='logo.png'):
-    if request.form.get('is_file') is not None:
-        file = request.files['file-file']
-        file_name, tail = generate_filename(file.filename, str(new))
-        file.save(file_name)
-        return tail
-    tail = request.form['file-name']
-    return tail if tail else default
-
-
 def update_mc_count(mouth: list, dv: int = 1):
     year = YearsTable.select(mouth[0])
     year.set_mc_count(mouth[1] - 1, year.get_mc_count(mouth[1] - 1) + dv)
@@ -60,18 +50,19 @@ def events():
 def add_mc():
     try:
         name = request.form['name']
+        short_description = request.form['short_description']
         description = request.form['description']
         duration = int(request.form['duration'])
-        empty_checker(name, description)
+        empty_checker(name, short_description, description)
     except Exception:
         return render_template(TEMPLATE, error_add_mc='Поля заполнены не правильно', **params())
 
     if duration < 1 or duration > 240:
         return render_template(TEMPLATE, error_add_mc='Мастер-класс не может столько длиться', **params())
-    mc = MasterClass([None, name, '', description, duration, ''])
+    mc = MasterClass([None, name, short_description, description, duration, ''])
     MasterClassesTable.insert(mc)
     mc = MasterClassesTable.select_last()
-    mc.file = get_image_name(mc.id)
+    mc.file = parse_checkbox(mc.id, 'logo.png', folder='MasterClass/')
     MasterClassesTable.update(mc)
     return render_template(TEMPLATE, error_add_mc='Мастер-класс добавлен', **params())
 
@@ -83,6 +74,7 @@ def edit_mc():
     try:
         id = int(request.form['id'])
         name = request.form['name']
+        short_description = request.form['short_description']
         description = request.form['description']
         duration = int(request.form['duration']) if request.form['duration'] else None
     except Exception:
@@ -95,11 +87,13 @@ def edit_mc():
         return render_template(TEMPLATE, error_edit_mc='Мастер-класс не может столько длиться', **params())
     if name:
         mc.name = name
+    if short_description:
+        mc.short_desc = short_description
     if description:
         mc.description = description
     if duration:
         mc.duration = duration
-    mc.file = get_image_name(mc.id, mc.file)
+    mc.file = parse_checkbox(mc.id, mc.file, folder='MasterClass/')
     MasterClassesTable.update(mc)
     calendar_update_all()
     return render_template(TEMPLATE, error_edit_mc='Мастер-класс изменён', **params())

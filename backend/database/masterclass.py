@@ -7,18 +7,21 @@ class MasterClass(Row):
         Строка таблицы MasterClassesTable
         id              INT     NOT NULL    PK  AI  UNIQUE
         name            TEXT    NOT NULL
-        photo           TEXT    NOT NULL
+        short_desc      TEXT    NOT NULL
         description     TEXT    NOT NULL
         duration        INT                                 (минуты)
         file            TEXT    NOT NULL
     """
-    fields = ['id', 'name', 'photo', 'description', 'duration', 'file']
+    fields = ['id', 'name', 'short_desc', 'description', 'duration', 'file']
 
     def __init__(self, row):
         Row.__init__(self, MasterClass, row)
 
     def get_html(self):
         return markdown(self.description)
+
+    def get_short_html(self):
+        return markdown(self.short_desc)
 
 
 class MasterClassesTable:
@@ -29,7 +32,7 @@ class MasterClassesTable:
         Table.drop_and_create(MasterClassesTable.table, '''(
         "id"	INTEGER NOT NULL UNIQUE,
         "name"	TEXT NOT NULL,
-        "photo"	TEXT NOT NULL,
+        "short_desc"	TEXT NOT NULL,
         "description"	TEXT NOT NULL,
         "duration"	INTEGER NOT NULL,
         "file"	TEXT NOT NULL,

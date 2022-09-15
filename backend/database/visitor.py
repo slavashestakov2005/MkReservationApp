@@ -13,8 +13,9 @@ class Visitor(Row):
         status      INT     NOT NULL                        (Перечислено ниже)
         payment     INT     NOT NULL
         time        INT     NOT NULL
+        telephone   TEXT    NOT NULL
     """
-    fields = ['id', 'event', 'name1', 'name2', 'vclass', 'status', 'payment', 'time']
+    fields = ['id', 'event', 'name1', 'name2', 'vclass', 'status', 'payment', 'time', 'telephone']
     SIGN_UP, PAID, NOT_PAID, ERROR = 0, 1, 2, 3
     STATUSES = ['Зарегистрирован', 'Оплачено', 'Не оплачено', 'Ошибка']
 
@@ -45,6 +46,7 @@ class VisitorsTable:
         "status"	INTEGER NOT NULL,
         "payment"	INTEGER NOT NULL,
         "time"	INTEGER NOT NULL,
+        "telephone"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
         );''')
 

@@ -1,21 +1,105 @@
-let timer = null;
-let xhr = null;
+/* hrefs */
+function go(url){
+    document.location.href = url;
+}
+
+function clickCard(card, year=0){
+    go((year ? '../' + year + '/' : '') + card + '.html')
+}
 
 
-function get_color_for_places(value){
+/* textarea */
+function textAreaInput(textarea){
+    textarea.style.height = '1px';
+    textarea.style.height = (textarea.scrollHeight + 6) + 'px';
+}
+
+function initTextArea(){
+    let areas = document.getElementsByClassName('js-textarea');
+    for (let textarea of areas){
+        textarea.oninput = function(){ textAreaInput(textarea); };
+        textAreaInput(textarea);
+    }
+}
+
+
+/* slider */
+function initSlider(){
+    document.addEventListener('DOMContentLoaded', () => {
+        new ItcSimpleSlider('.itcss', {
+            loop: true,
+            autoplay: true,
+            interval: 5000,
+            swipe: true,
+        });
+    });
+}
+
+
+/* checkbox */
+function checkBoxClick(box){
+    let children = box.children();
+    let chb = $(children[0]).children()[0];
+    if (chb.checked){
+        children[1].style.display = 'block';
+        children[2].style.display = 'none';
+    } else{
+        children[1].style.display = 'none';
+        children[2].style.display = 'block';
+    }
+}
+
+function initCheckbox(){
+    let boxes = document.getElementsByClassName('js-checkbox');
+    for(let box of boxes){
+        box = $(box);
+        $(box.children()[0]).children()[0].onclick = function(){ checkBoxClick(box); };
+        checkBoxClick(box);
+    }
+}
+
+
+/* markdown */
+function convert(str) {
+    str = str.replace(/&amp;/g, "&");
+    str = str.replace(/&gt;/g, ">");
+    str = str.replace(/&lt;/g, "<");
+    str = str.replace(/&quot;/g, '"');
+    str = str.replace(/&#039;/g, "'");
+    return str;
+}
+
+function initMDContent() {
+    let mds = document.getElementsByClassName('js-md-content');
+    for(let md of mds) md.innerHTML = convert(md.innerHTML.toString());
+}
+
+
+/* places color */
+function getPlacesColor(value){
     if (value === 0) return 'places-ended';
     else if (value <= 5) return 'places-few';
     else return 'places-many';
 }
 
-function popover_start(elem){
+function setPlacesColor(value){
+    let elements = document.getElementsByClassName('places-choice');
+    let name = getPlacesColor(value);
+    for (let elem of elements) elem.className = 'course-info ' + name;
+}
+
+
+/* markdown simple popover */
+let timer = null, xhr = null;
+
+function MDPopoverStart(elem){
     timer = null;
     let hr = elem.children()[0].href;
     let template = elem.children()[1].innerHTML, content_color = ' class="_">';
     xhr = $.ajax(hr).done(
         function(data) {
             xhr = null;
-            content_color = content_color.replace('_',  get_color_for_places(data['value']));
+            content_color = content_color.replace('_',  getPlacesColor(data['value']));
             if (data['closing']) template = template.replace('><!-- put is_closing -->', 'class="invisible">');
             elem.popover({
                 trigger: 'manual',
@@ -28,7 +112,7 @@ function popover_start(elem){
     );
 }
 
-function popover_clear(){
+function MDPopoverClear(){
     let cls = false;
     if (timer) {
         clearTimeout(timer);
@@ -43,62 +127,32 @@ function popover_clear(){
     return cls;
 }
 
-function popover_end(event){
+function MDPopoverEnd(event){
     let elem = $(event.currentTarget);
-    if (!popover_clear()) elem.popover('hide');
+    if (!MDPopoverClear()) elem.popover('hide');
 }
 
-function popovers(){
-    $('.event_popup').hover(
+function initMDPopover(){
+    $('.js-md-popover').hover(
         function(event) {
-            timer = setTimeout(popover_start, 1000, $(event.currentTarget));
-        }, popover_end
+            timer = setTimeout(MDPopoverStart, 1000, $(event.currentTarget));
+        }, MDPopoverEnd
     );
-    $('.event_popup').click(
+    $('.js-md-popover').click(
         function(event) {
             event.preventDefault();
-            popover_start($(event.currentTarget));
+            MDPopoverStart($(event.currentTarget));
         }
     );
     document.addEventListener('click', function(e) {
-        popover_clear();
-        $('.event_popup').popover('hide');
+        MDPopoverClear();
+        $('.js-md-popover').popover('hide');
     });
 }
 
-function textInput(document, textarea){
-    textarea.style.height = '1px';
-    textarea.style.height = (textarea.scrollHeight + 6) + 'px';
-}
 
-function listenInput(document){
-    let areas = document.getElementsByClassName('textarea');
-    for (let textarea of areas){
-        textarea.oninput = function(){ textInput(document, textarea); };
-        textInput(document, textarea);
-    }
-}
-
-function clickCard(document, card, year=0){
-    if (year) document.location.href = '../' + year + '/' + card + '.html';
-    else document.location.href = card + '.html';
-}
-
-function convert(str) {
-    str = str.replace(/&amp;/g, "&");
-    str = str.replace(/&gt;/g, ">");
-    str = str.replace(/&lt;/g, "<");
-    str = str.replace(/&quot;/g, '"');
-    str = str.replace(/&#039;/g, "'");
-    return str;
-}
-
-function parseMD(document) {
-    let mds = document.getElementsByClassName('markdown-popup');
-    for(let md of mds) md.innerHTML = convert(md.innerHTML.toString());
-}
-
-function markdown_popover(md) {
+/* markdown double click popover */
+function MDDoubleClickPopover(md) {
     let clickedTime = new Date().getTime();
     let elem = $(md);
     if (elem.children().length === 3){
@@ -121,38 +175,7 @@ function markdown_popover(md) {
     }).popover('show');
 }
 
-function showMD(document) {
-    let mds = document.getElementsByClassName('markdown-text');
-    for(let md of mds) md.onclick = function(){ markdown_popover(md); };
-}
-
-function visit(document, url) {
-    document.location.href = url;
-}
-
-function choice_color(document, value){
-    let elements = document.getElementsByClassName('places-choice');
-    let name = get_color_for_places(value);
-    for (let elem of elements) elem.className = name;
-}
-
-function box_click(box){
-    let children = box.children();
-    let chb = $(children[0]).children()[0];
-    if (chb.checked){
-        children[1].style.display = 'block';
-        children[2].style.display = 'none';
-    } else{
-        children[1].style.display = 'none';
-        children[2].style.display = 'block';
-    }
-}
-
-function listenCheckbox(document){
-    let boxes = document.getElementsByClassName('chekable');
-    for(let box of boxes){
-        box = $(box);
-        $(box.children()[0]).children()[0].onclick = function(){ box_click(box); };
-        box_click(box);
-    }
+function initMDDoubleClickPopover() {
+    let mds = document.getElementsByClassName('js-md-double-click-popover');
+    for(let md of mds) md.onclick = function(){ MDDoubleClickPopover(md); };
 }

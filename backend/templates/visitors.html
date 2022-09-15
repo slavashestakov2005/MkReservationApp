@@ -1,47 +1,42 @@
 {% extends "page1.html" %}
-
-{% block header %}
-<a href="/">МК</a>
-{% if event %}
-/
-<a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
-/
-<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">{{ event.mouth_name() }}</a>
-{% endif %}
-/
-Регистрация
-{% endblock %}
-
 {% block content %}
-<div class="row col-12 justify-content-center">
-    <div class="col-12"><center><h1>Регистрация</h1></center></div>
+
+<div class="blue-line"></div>
+<div class="white-line"></div>
+
+<div class="row col-12">
     {% if info %}
-        <div class="col-lg-4 col-md-6 col-sm-6">
-            <center><h2>Описание события</h2></center>
-            <center><p><b>{{ info.name }}</b></p></center>
-            <p>{{ info.date }} {{ info.start }} - {{ info.end }}.</p>
-            <p class="markdown-popup">{{ info.description }}</p>
-            <p>Преподаватель: {{ info.teacher }}</p>
-            <p>Стоимость: {{ info.cost }} &#8381;</p>
-            <p class="places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
-            <script>choice_color(document, {{ info.places - info.booked }});</script>
+        <div class="col-1"></div>
+        <div class="col-7">
+            <span class="course-title">{{ info.name }}</span><br>
+            <span class="course-info">{{ info.date }} &nbsp; {{ info.start }} - {{ info.end }}</span><br>
+            <span class="course-info">{{ info.classes }}</span><br>
+            <span class="course-info">Преподаватель: {{ info.teacher }}</span><br><br>
+            <span class="course-description js-md-content">
+                {{ info.description }}
+            </span>
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-6"><center>
-           <h2>Регистрация</h2>
+        <div class="col-4">
+            <img src="../Images/{{ info.file }}" width="100%"><br><br>
+            <p class="course-info places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
+            <script>setPlacesColor({{ info.places - info.booked }});</script>
+
+            <p class="course-info">Регистрация</p>
             <form action="add_visitor" method="post">
                 <p class="invisible"><input type="text" name="event" value="{{ event.id }}" hidden></p>
                 <p><input type="text" name="name1" placeholder="Фамилия ребёнка"></p>
                 <p><input type="text" name="name2" placeholder="Имя ребёнка"></p>
                 <p><input type="text" name="class" placeholder="Класс"></p>
+                <p><input type="tel" name="telephone" placeholder="Телефон родителя"></p>
                 {% if error_add_visitor %} <p class="error">[ {{ error_add_visitor }} ]</p>
                 {% endif %}
-                <input type="submit" value="Зарегистрировать">
-                <p>Нажимая на кнопку «Зарегистрировать», Вы соглашаетесь с <a href="../Info/privacy_policy.html" target="_blank">правилами обработки данных</a>.</p>
+                <input type="submit" class="form-control form-item" value="Зарегистрировать">
+                <p class="course-description">Нажимая на кнопку «Зарегистрировать», Вы соглашаетесь с <a href="../Info/privacy_policy.html" target="_blank">правилами обработки данных</a>.</p>
             </form>
             {% if url %}<p>Подтвердите участие, оплатив событие по <a href="{{ url }}" target="_blank">ссылке</a>.</p>
             {% elif msg %}<p class="error">{{ msg }}</p>
             {% endif %}
-        </center></div>
+        </div>
     {% elif msg %}
         <div class="col-12"><center><p class="error">{{ msg }}</p></center></div>
     {% else %}
@@ -49,6 +44,6 @@
     {% endif %}
 </div>
 
-<script>parseMD(document);</script>
+<script>initMDContent();</script>
 
 {% endblock %}

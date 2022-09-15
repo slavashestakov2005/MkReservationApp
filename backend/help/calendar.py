@@ -8,6 +8,9 @@ from .help import save_template, mouth_name
 class EventInfo:
     def __init__(self, event, mc, teacher):
         self.id, self.places, self.cost, self.booked = event.id, event.places, event.cost, event.booked
+        self.classes = event.get_classes()
+        if self.classes == 'Все':
+            self.classes += ' классы'
         self.date, self.start = EventInfo.start(event.start)
         self.end = EventInfo.end(event.start, mc.duration)
         self.name, self.description, self.file = mc.name, mc.get_html(), mc.file

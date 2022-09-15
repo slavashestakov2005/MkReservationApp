@@ -1,33 +1,10 @@
 {% extends "page1.html" %}
-
-{% block header %}
-<a href="/">МК</a>
-{% if event %}
-/
-<a href="{{ event.mouth()[0] }}/main.html">{{ event.mouth()[0] }}</a>
-/
-<a href="{{ event.mouth()[0] }}/{{ event.mouth()[1] }}.html">{{ event.mouth_name() }}</a>
-{% endif %}
-/
-Записавшиеся
-{% endblock %}
-
 {% block content %}
+
 <div class="row col-12 justify-content-center">
-    <div class="col-12"><center><h1>Записавшиеся</h1></center></div>
     {% if info %}
-        <div class="col-lg-6 col-md-6 col-sm-6">
-            <center><h2>Описание события</h2></center>
-            <center><p><b>{{ info.name }}</b></p></center>
-            <p>{{ info.date }} {{ info.start }} - {{ info.end }}.</p>
-            <p class="markdown-popup">{{ info.description }}</p>
-            <p>Преподаватель: {{ info.teacher }}</p>
-            <p>Стоимость: {{ info.cost }} &#8381;</p>
-            <p class="places-choice">Осталось мест: {{ info.places - info.booked }}  / {{ info.places }}</p>
-            <script>choice_color(document, {{ info.places - info.booked }});</script>
-        </div>
         <div class="col-lg-6 col-md-8 col-sm-12">
-            <center><h2>Записавшиеся</h2>
+            <center><h1>Записавшиеся</h1>
             {% if data.__len__() == 0 %}
                 <p>На это событие пока никто не записался :(</p>
             {% else %}
@@ -41,6 +18,7 @@
                             <td>Статус</td>
                             <td>Платёж</td>
                             <td>Время</td>
+                            <td>Телефон</td>
                         </tr>
                         {% for visitor in data %}
                             <tr>
@@ -51,6 +29,7 @@
                                 <td>{{ visitor.get_status() }}</td>
                                 <td>{{ visitor.payment }}</td>
                                 <td>{{ visitor.get_time() }}</td>
+                                <td>{{ visitor.telephone }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -64,8 +43,8 @@
     {% else %}
         <p class="error">Такое событие не найдено, попробуйте ещё раз...</p>
     {% endif %}
-</center>
+</div>
 
-<script>parseMD(document);</script>
+<script>initMDContent();</script>
 
 {% endblock %}

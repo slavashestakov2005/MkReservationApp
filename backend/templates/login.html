@@ -1,12 +1,6 @@
 {% extends "page1.html" %}
-
-{% block header %}
-<a href="/">МК</a>
-/
-Вход на сайт
-{% endblock %}
-
 {% block content %}
+
 <center>
     <h1>Вход на сайт</h1>
     <form action="login" method="post">
@@ -16,7 +10,7 @@
         <br/>
         {% if error %} <font color="red">[ {{ error }} ]</font><br/>
         {% endif %}
-        <input type="submit" value="Войти">
+        <input type="submit" class="form-control form-item" value="Войти">
     </form>
 </center>
 

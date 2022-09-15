@@ -12,8 +12,9 @@ class Teacher(Row, UserMixin):
         name3       TEXT    NOT NULL                        (Отчество)
         login       TEXT    NOT NULL
         password    TEXT    NOT NULL
+        file        TEXT    NOT NULL
     """
-    fields = ['id', 'name1', 'name2', 'name3', 'login', 'password']
+    fields = ['id', 'name1', 'name2', 'name3', 'login', 'password', 'file']
 
     def __init__(self, row):
         Row.__init__(self, Teacher, row)
@@ -31,6 +32,9 @@ class Teacher(Row, UserMixin):
     def name(self):
         return '{} {}. {}.'.format(self.name1, self.name2[0], self.name3[0])
 
+    def full_name(self):
+        return '{} {} {}'.format(self.name1, self.name2, self.name3)
+
 
 class TeachersTable:
     table = "teacher"
@@ -44,6 +48,7 @@ class TeachersTable:
         "name3"	TEXT NOT NULL,
         "login"	TEXT NOT NULL,
         "password"	TEXT NOT NULL,
+        "file"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
         );''')
 
@@ -54,6 +59,10 @@ class TeachersTable:
     @staticmethod
     def select(id: int) -> Teacher:
         return Table.select_one(TeachersTable.table, Teacher, 'id', id)
+
+    @staticmethod
+    def select_last() -> Teacher:
+        return Table.select_last(TeachersTable.table, Teacher)
 
     @staticmethod
     def select_by_login(login: str) -> Teacher:

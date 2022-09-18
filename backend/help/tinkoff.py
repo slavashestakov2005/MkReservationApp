@@ -1,6 +1,7 @@
 from ..config import Config
 from requests import post
 from hashlib import sha256
+from ..database import Visitor
 
 
 class TinkoffCard:
@@ -50,3 +51,11 @@ class TinkoffCard:
         data = {'PaymentId': payment}
         data = TinkoffCard.__do_post('GetState', data)
         return TinkoffCard.__gen_result(data, 'Status')
+
+    @staticmethod
+    def get_status(status):
+        if status in Config.PAID_STATES:
+            return Visitor.PAID
+        elif status in Config.NOT_PAID_STATES:
+            return Visitor.NOT_PAID
+        return None

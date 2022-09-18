@@ -1,12 +1,14 @@
 {% extends "page1.html" %}
 {% block content %}
 
-<div class="itcss">
-	<div class="itcss__wrapper">
-		<div class="itcss__items">
-			<div class="itcss__item"><img src="../Images/img1.png" class="slider-image"></div>
-			<div class="itcss__item"><img src="../Images/img2.jfif" class="slider-image"></div>
-			<div class="itcss__item"><img src="../Images/img3.jpg" class="slider-image"></div>
+<div class="row col-12 justify-content-center">
+	<div class="itcss row">
+		<div class="itcss__wrapper">
+			<div class="itcss__items">
+				<div class="itcss__item"><img src="../Images/img1.png" class="slider-image"></div>
+				<div class="itcss__item"><img src="../Images/img2.jfif" class="slider-image"></div>
+				<div class="itcss__item"><img src="../Images/img3.jpg" class="slider-image"></div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -14,7 +16,7 @@
 <div class="blue-line">
 	<h1 class="main-title">Мастер классы «Универс»</h1>
 </div>
-<div class="band row col-12">
+<div class="band row col-12 justify-content-center">
 	{% for i in range(12) %}
 	{% for ev in events %}
 		{% set m = mc[ev.master_class] %}

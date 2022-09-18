@@ -1,4 +1,4 @@
-from .database import Table, Row
+from .database import Row, Table, Query
 from datetime import datetime
 
 
@@ -16,6 +16,7 @@ class Visitor(Row):
         telephone   TEXT    NOT NULL
     """
     fields = ['id', 'event', 'name1', 'name2', 'vclass', 'status', 'payment', 'time', 'telephone']
+    add_form = [Row.NONE, Row.NONE, Row.NE_STR, Row.NE_STR, Row.NE_STR, Row.NONE, Row.NONE, Row.NONE, Row.NE_STR]
     SIGN_UP, PAID, NOT_PAID, ERROR = 0, 1, 2, 3
     STATUSES = ['Зарегистрирован', 'Оплачено', 'Не оплачено', 'Ошибка']
 
@@ -32,12 +33,10 @@ class Visitor(Row):
         return datetime.fromtimestamp(self.time).strftime('%Y.%m.%d %H:%M:%S')
 
 
-class VisitorsTable:
+class VisitorsTable(Table):
     table = "visitor"
-
-    @staticmethod
-    def create_table() -> None:
-        Table.drop_and_create(VisitorsTable.table, '''(
+    row = Visitor
+    create = '''(
         "id"	INTEGER NOT NULL UNIQUE,
         "event"	INTEGER NOT NULL,
         "name1"	TEXT NOT NULL,
@@ -48,29 +47,13 @@ class VisitorsTable:
         "time"	INTEGER NOT NULL,
         "telephone"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
-        );''')
-
-    @staticmethod
-    def select_all() -> list:
-        return Table.select_list(VisitorsTable.table, Visitor)
-
-    @staticmethod
-    def select(id: int) -> Visitor:
-        return Table.select_one(VisitorsTable.table, Visitor, 'id', id)
+        );'''
 
     @staticmethod
     def select_by_data(visitor: Visitor) -> Visitor:
-        return Table.select_one(VisitorsTable.table, Visitor, 'event', visitor.event, 'name1', visitor.name1, 'name2',
+        return Query.select_one(VisitorsTable.table, Visitor, 'event', visitor.event, 'name1', visitor.name1, 'name2',
                                 visitor.name2, 'vclass', visitor.vclass)
 
     @staticmethod
     def select_by_event(event: int) -> list:
-        return Table.select_list(VisitorsTable.table, Visitor, 'event', event)
-
-    @staticmethod
-    def insert(visitor: Visitor) -> None:
-        return Table.insert(VisitorsTable.table, visitor)
-
-    @staticmethod
-    def update(visitor: Visitor) -> None:
-        return Table.update(VisitorsTable.table, visitor)
+        return Query.select_list(VisitorsTable.table, Visitor, 'event', event)

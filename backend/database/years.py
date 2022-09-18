@@ -1,4 +1,4 @@
-from .database import Table, Row
+from .database import Row, Table, Query
 
 
 class Year(Row):
@@ -11,6 +11,7 @@ class Year(Row):
         revenue         TEXT    NOT NULL                        (<#0>|<#1>|...|<#11>)
     """
     fields = ['year', 'months', 'mc_count', 'visitors', 'revenue']
+    add_form = [Row.INT, Row.NONE, Row.NONE, Row.NONE, Row.NONE]
     ALL_MONTHS = (1 << 12) - 1
     NONE_MOUTHS = 0
     ZERO12 = '0|' * 11 + '0'
@@ -55,44 +56,23 @@ class Year(Row):
         self.revenue = '|'.join(revs)
 
 
-class YearsTable:
+class YearsTable(Table):
     table = "year"
-
-    @staticmethod
-    def create_table() -> None:
-        Table.drop_and_create(YearsTable.table, '''(
+    row = Year
+    id_field = 'year'
+    create = '''(
         "year"	INTEGER NOT NULL UNIQUE,
         "months"	INTEGER NOT NULL,
         "mc_count"	TEXT NOT NULL,
         "visitors"	TEXT NOT NULL,
         "revenue"	TEXT NOT NULL,
         PRIMARY KEY("year")
-        );''')
-
-    @staticmethod
-    def select_all() -> list:
-        return Table.select_list(YearsTable.table, Year)
-
-    @staticmethod
-    def select(year: int) -> Year:
-        return Table.select_one(YearsTable.table, Year, 'year', year)
+        );'''
 
     @staticmethod
     def left(year: int) -> list:
-        return Table.select_list_with_simple_where(YearsTable.table, Year, 'year', '<', year)
+        return Query.select_list_with_simple_where(YearsTable.table, Year, 'year', '<', year)
 
     @staticmethod
     def right(year: int) -> list:
-        return Table.select_list_with_simple_where(YearsTable.table, Year, 'year', '>', year)
-
-    @staticmethod
-    def update(year: Year) -> None:
-        return Table.update(YearsTable.table, year, 'year')
-
-    @staticmethod
-    def insert(year: Year) -> None:
-        return Table.insert(YearsTable.table, year)
-
-    @staticmethod
-    def delete(year: Year) -> None:
-        return Table.delete(YearsTable.table, 'year', year.year)
+        return Query.select_list_with_simple_where(YearsTable.table, Year, 'year', '>', year)

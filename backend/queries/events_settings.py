@@ -1,23 +1,23 @@
 from backend import app
-from flask import render_template, request
+from flask import render_template
 from flask_cors import cross_origin
 from flask_login import login_required
 from datetime import datetime
-from ..help import empty_checker, calendar_update_all, calendar_update_mouths, parse_checkbox, SplitFile
-from ..database import MasterClassesTable, MasterClass, EventsTable, Event, TeachersTable, YearsTable
+from ..help import calendar_update_all, calendar_update_mouths, parse_checkbox, SplitFile, copy_fields, form_add,\
+    form_edit, form_delete
+from ..database import MasterClassesTable, EventsTable, Event, TeachersTable, YearsTable
 from ..config import Config
 '''
-                    TEMPLATE            Имя шиблона с настройкой мастер-классов и событий.
-                    params()            Постоянные параметры этого шаблона.
-                    get_image_name()    Генерирует имя файла для логотипа МК.
-                    update_mc_count()   Обновляет количество событий в месяце.
-    /events         events()            Пересылает на страницу с этим шаблоном.
-    /add_mc         add_mc()            Создаёт мастер-класс.
-    /edit_mc        edit_mc()           Редактирует мастер-класс.
-    /delete_mc      delete_mc()         Удаляет мастер-класс.
-    /add_event      add_event()         Создаёт событие.
-    /edit_event     edit_event()        Редактирует событие.
-    /delete_event   delete_event()      Удаляет событие.
+            TEMPLATE            Имя шаблона с настройкой мастер классов и событий.
+            params()            Постоянные параметры этого шаблона.
+            update_mc_count()   Обновляет количество событий в месяце.
+    /events                     Пересылает на страницу с этим шаблоном.
+    /add_mc                     Создаёт мастер-класс.
+    /edit_mc                    Редактирует мастер-класс.
+    /delete_mc                  Удаляет мастер-класс.
+    /add_event                  Создаёт событие.
+    /edit_event                 Редактирует событие.
+    /delete_event               Удаляет событие.
 '''
 
 
@@ -47,104 +47,70 @@ def events():
 @app.route('/add_mc', methods=['POST'])
 @cross_origin()
 @login_required
-def add_mc():
-    try:
-        name = request.form['name']
-        short_description = request.form['short_description']
-        description = request.form['description']
-        duration = int(request.form['duration'])
-        empty_checker(name, short_description, description)
-    except Exception:
+@form_add(MasterClassesTable)
+def add_mc(row):
+    if row.__is_none__:
         return render_template(TEMPLATE, error_add_mc='Поля заполнены не правильно', **params())
-
-    if duration < 1 or duration > 240:
-        return render_template(TEMPLATE, error_add_mc='Мастер-класс не может столько длиться', **params())
-    mc = MasterClass([None, name, short_description, description, duration, ''])
-    MasterClassesTable.insert(mc)
-    mc = MasterClassesTable.select_last()
-    mc.file = parse_checkbox(mc.id, 'logo.png', folder='MasterClass/')
-    MasterClassesTable.update(mc)
-    return render_template(TEMPLATE, error_add_mc='Мастер-класс добавлен', **params())
+    if row.duration < 1 or row.duration > 240:
+        return render_template(TEMPLATE, error_add_mc='Мастер класс не может столько длиться', **params())
+    MasterClassesTable.insert(row)
+    row = MasterClassesTable.select_last()
+    row.file = parse_checkbox(row.id, 'logo.png', folder='MasterClass/')
+    MasterClassesTable.update(row)
+    return render_template(TEMPLATE, error_add_mc='Мастер класс добавлен', **params())
 
 
 @app.route('/edit_mc', methods=['POST'])
 @cross_origin()
 @login_required
-def edit_mc():
-    try:
-        id = int(request.form['id'])
-        name = request.form['name']
-        short_description = request.form['short_description']
-        description = request.form['description']
-        duration = int(request.form['duration']) if request.form['duration'] else None
-    except Exception:
+@form_edit(MasterClassesTable)
+def edit_mc(old_row, new_row):
+    if new_row.__is_none__:
         return render_template(TEMPLATE, error_edit_mc='Поля заполнены не правильно', **params())
-
-    mc = MasterClassesTable.select(id)
-    if mc.__is_none__:
-        return render_template(TEMPLATE, error_edit_mc='Не верный ID мастер-класса', **params())
-    if duration is not None and (duration < 1 or duration > 240):
-        return render_template(TEMPLATE, error_edit_mc='Мастер-класс не может столько длиться', **params())
-    if name:
-        mc.name = name
-    if short_description:
-        mc.short_desc = short_description
-    if description:
-        mc.description = description
-    if duration:
-        mc.duration = duration
-    mc.file = parse_checkbox(mc.id, mc.file, folder='MasterClass/')
-    MasterClassesTable.update(mc)
+    if old_row.__is_none__:
+        return render_template(TEMPLATE, error_edit_mc='Не верный ID мастер класса', **params())
+    if new_row.duration is not None and (new_row.duration < 1 or new_row.duration > 240):
+        return render_template(TEMPLATE, error_edit_mc='Мастер класс не может столько длиться', **params())
+    new_row = copy_fields(new_row, old_row)
+    new_row.file = parse_checkbox(new_row.id, new_row.file, folder='MasterClass/')
+    MasterClassesTable.update(new_row)
     calendar_update_all()
-    return render_template(TEMPLATE, error_edit_mc='Мастер-класс изменён', **params())
+    return render_template(TEMPLATE, error_edit_mc='Мастер класс изменён', **params())
 
 
 @app.route('/delete_mc', methods=['POST'])
 @cross_origin()
 @login_required
-def delete_mc():
-    try:
-        id = int(request.form['id'])
-    except Exception:
-        return render_template(TEMPLATE, error_delete_mc='Поля заполнены не правильно', **params())
-
-    mc = MasterClassesTable.select(id)
-    if mc.__is_none__:
-        return render_template(TEMPLATE, error_delete_mc='Не верный ID мастер-класса', **params())
-    MasterClassesTable.delete(mc)
+@form_delete(MasterClassesTable)
+def delete_mc(row):
+    if row.__is_none__:
+        return render_template(TEMPLATE, error_delete_mc='Не верный ID мастер класса', **params())
+    MasterClassesTable.delete(row)
     calendar_update_all()
-    return render_template(TEMPLATE, error_delete_mc='Мастер-класс удалён', **params())
+    return render_template(TEMPLATE, error_delete_mc='Мастер класс удалён', **params())
 
 
 @app.route('/add_event', methods=['POST'])
 @cross_origin()
 @login_required
-def add_event():
-    try:
-        teacher = int(request.form['teacher'])
-        master_class = int(request.form['master_class'])
-        places = int(request.form['places'])
-        cost = int(request.form['cost'])
-        date = [int(_) for _ in request.form['date'].split('-')]
-        time = [int(_) for _ in request.form['time'].split(':')]
-        start = int(datetime(*date, *time).timestamp())
-        classes = Event.parse_classes(request.form['classes'])
-    except Exception:
+@form_add(EventsTable)
+def add_event(row):
+    if row.__is_none__:
         return render_template(TEMPLATE, error_add_event='Поля заполнены не правильно', **params())
-
-    if TeachersTable.select(teacher).__is_none__:
+    if TeachersTable.select(row.teacher).__is_none__:
         return render_template(TEMPLATE, error_add_event='Не верный ID преподавателя', **params())
-    if MasterClassesTable.select(master_class).__is_none__:
-        return render_template(TEMPLATE, error_add_event='Не верный ID мастер-класса', **params())
-    if places < 1 or places > 50:
+    if MasterClassesTable.select(row.master_class).__is_none__:
+        return render_template(TEMPLATE, error_add_event='Не верный ID мастер класса', **params())
+    if row.places < 1 or row.places > 50:
         return render_template(TEMPLATE, error_add_event='В событии не может участвовать столько людей', **params())
-    if cost < 0 or cost > 5000:
+    if row.cost < 0 or row.cost > 5000:
         return render_template(TEMPLATE, error_add_event='Событие не может столько стоить', **params())
-    if date[0] < 2022 or date[0] > 2100:
+    if row.start[0][0] < 2022 or row.start[0][0] > 2100:
         return render_template(TEMPLATE, error_add_event='Событие не может быть запланировано на такую дату', **params())
-    ev = Event([None, teacher, master_class, places, 0, cost, 0, start, classes])
-    m = ev.mouth()
-    EventsTable.insert(ev)
+    row.booked, row.revenue, row.classes = 0, 0, Event.parse_classes(row.classes)
+    row.start = int(datetime(*row.start[0], *row.start[1]).timestamp())
+    m = row.mouth()
+    EventsTable.insert(row)
     calendar_update_mouths([m])
     update_mc_count(m)
     return render_template(TEMPLATE, error_add_event='Событие добавлено', **params())
@@ -153,52 +119,33 @@ def add_event():
 @app.route('/edit_event', methods=['POST'])
 @cross_origin()
 @login_required
-def edit_event():
-    try:
-        id = int(request.form['id'])
-        teacher = int(request.form['teacher']) if request.form['teacher'] else 0
-        master_class = int(request.form['master_class']) if request.form['master_class'] else 0
-        places = int(request.form['places']) if request.form['places'] else None
-        cost = int(request.form['cost']) if request.form['cost'] else None
-        date = [int(_) for _ in request.form['date'].split('-')] if request.form['date'] else 0
-        time = [int(_) for _ in request.form['time'].split(':')] if request.form['time'] else 0
-        classes = Event.parse_classes(request.form['classes']) if request.form['classes'] else ''
-    except Exception:
+@form_edit(EventsTable)
+def edit_event(old_row, new_row):
+    if new_row.__is_none__:
         return render_template(TEMPLATE, error_edit_event='Поля заполнены не правильно', **params())
-
-    event = EventsTable.select(id)
-    if event.__is_none__:
+    if old_row.__is_none__:
         return render_template(TEMPLATE, error_edit_event='Не верный ID события', **params())
-    if teacher and TeachersTable.select(teacher).__is_none__:
+    if new_row.teacher and TeachersTable.select(new_row.teacher).__is_none__:
         return render_template(TEMPLATE, error_edit_event='Не верный ID преподавателя', **params())
-    if master_class and MasterClassesTable.select(master_class).__is_none__:
-        return render_template(TEMPLATE, error_edit_event='Не верный ID мастер-класса', **params())
-    if places is not None and (places < 1 or places > 50):
+    if new_row.master_class and MasterClassesTable.select(new_row.master_class).__is_none__:
+        return render_template(TEMPLATE, error_edit_event='Не верный ID мастер класса', **params())
+    if new_row.places is not None and (new_row.places < 1 or new_row.places > 50):
         return render_template(TEMPLATE, error_edit_event='В событии не может участвовать столько людей', **params())
-    if cost is not None and (cost < 0 or cost > 5000):
+    if new_row.cost is not None and (new_row.cost < 0 or new_row.cost > 5000):
         return render_template(TEMPLATE, error_edit_event='Событие не может столько стоить', **params())
-    if date != 0 and (date[0] < 2022 or date[0] > 2100):
+    if new_row.start[0] is not None and (new_row.start[0][0] < 2022 or new_row.start[0][0] > 2100):
         return render_template(TEMPLATE, error_edit_event='Событие не может быть запланировано на такую дату', **params())
-    old_mouth = event.mouth()
-    if teacher:
-        event.teacher = teacher
-    if master_class:
-        event.master_class = master_class
-    if places:
-        event.places = places
-    if cost:
-        event.cost = cost
-    old_time = event.date().split()
-    if date != 0 and time != 0:
-        event.start = int(datetime(*date, *time).timestamp())
-    elif date != 0:
-        event.start = int(datetime(*date, *list(map(int, old_time[1].split(':')))).timestamp())
-    elif time != 0:
-        event.start = int(datetime(*list(map(int, old_time[0].split('.'))), *time).timestamp())
-    if classes:
-        event.classes = classes
-    EventsTable.update(event)
-    new_mouth = event.mouth()
+    old_mouth, old_time = old_row.mouth(), old_row.date().split()
+    date, time = new_row.start
+    new_row = copy_fields(new_row, old_row)
+    if date and time:
+        new_row.start = int(datetime(*date, *time).timestamp())
+    elif date:
+        new_row.start = int(datetime(*date, *list(map(int, old_time[1].split(':')))).timestamp())
+    elif time:
+        new_row.start = int(datetime(*list(map(int, old_time[0].split('.'))), *time).timestamp())
+    EventsTable.update(new_row)
+    new_mouth = new_row.mouth()
     if old_mouth != new_mouth:
         calendar_update_mouths([old_mouth, new_mouth])
         update_mc_count(old_mouth, -1)
@@ -211,17 +158,12 @@ def edit_event():
 @app.route('/delete_event', methods=['POST'])
 @cross_origin()
 @login_required
-def delete_event():
-    try:
-        id = int(request.form['id'])
-    except Exception:
-        return render_template(TEMPLATE, error_delete_event='Поля заполнены не правильно', **params())
-
-    event = EventsTable.select(id)
-    if event.__is_none__:
+@form_delete(EventsTable)
+def delete_event(row):
+    if row.__is_none__:
         return render_template(TEMPLATE, error_delete_event='Не верный ID события', **params())
-    EventsTable.delete(event)
-    m = event.mouth()
+    EventsTable.delete(row)
+    m = row.mouth()
     calendar_update_mouths([m])
     update_mc_count(m, -1)
     return render_template(TEMPLATE, error_delete_event='Событие удалено', **params())

@@ -1,4 +1,14 @@
 /* page */
+:root {
+    --dark-grey-color: #d3d3d3;
+    --dark2-grey-color: #dddddd;
+    --light-grey-color: #f1f1f1;
+    --light-blue-color: #5b64e1;
+    --dark-blue-color: #3f48cc;
+    --footer-color: #d0daee;
+    --box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -16,7 +26,7 @@ html, body {
     position: relative;
     z-index: 0;
     min-height: 100%;
-    margin: 5px 10px;
+    margin: 10px;
 	padding-bottom: 160px;
 }
 
@@ -29,21 +39,21 @@ h4{ font-size: 12pt; }
 
 /* lines */
 .blue-line {
-	background-color: #3f48cc;
+	background-color: var(--dark-blue-color);
 	text-align: center;
 	padding: 2px;
 	min-height: 50px;
 }
 
 .white-line {
-	background-color: white;
+	background-color: transparent;
 	text-align: center;
 	padding: 2px;
 	min-height: 50px;
 }
 
 .small-white-line {
-	background-color: white;
+	background-color: transparent;
 	text-align: center;
 	padding: 2px;
 	min-height: 10px;
@@ -61,23 +71,27 @@ h4{ font-size: 12pt; }
 	position: absolute;
 	left: 0;
 	bottom: 0;
-	width: 100%;
 	height: 150px;
-	background-color: #D0DAEE;
+	background-color: var(--footer-color);
 }
 
 
 
 /* band-course */
+.band {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .band-item {
-	background-color: #f1f1f1;
+	background-color: var(--light-grey-color);
 	margin: 15px;
 	padding: 15px;
 	border-radius: 10px;
 }
 
 .band-item:hover {
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	box-shadow: var(--box-shadow);
 	cursor: pointer;
 }
 
@@ -104,7 +118,7 @@ h4{ font-size: 12pt; }
 
 /* teacher */
 .teacher-item {
-    background-color: #f1f1f1;
+    background-color: var(--light-grey-color);
     margin: 15px;
     padding: 15px;
     border-radius: 10px;
@@ -143,16 +157,16 @@ h4{ font-size: 12pt; }
     width: 200px;
     height: 80px;
     text-align: center;
-    background-color: #3f48cc;
+    background-color: var(--dark-blue-color);
     color: white;
-    padding: 10px 20px 16px 16px;
     margin: 3px 3px 3px 3px;
     border-radius: 10px;
-    font-size: 14pt;
     border: none;
     overflow: hidden;
 	display: inline-block;
     vertical-align: middle;
+    font-size: 15pt;
+    font-weight: bold;
 }
 
 .dropbtn:before {
@@ -165,8 +179,8 @@ h4{ font-size: 12pt; }
 .dropdown-menu {
     display: none;
     position: absolute;
-    background-color: #f1f1f1;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    background-color: var(--light-grey-color);
+    box-shadow: var(--box-shadow);
     z-index: 1;
     right: 0;
 }
@@ -178,9 +192,9 @@ h4{ font-size: 12pt; }
     border-radius: 5px;
 }
 
-.dropdown-menu a:hover { background-color: #ddd; }
+.dropdown-menu a:hover { background-color: var(--dark2-grey-color); }
 .dropdown:hover .dropdown-menu { display: block;  margin-top: 0; }
-.dropdown:hover .dropbtn { background-color: #3f48cc; }
+.dropdown:hover .dropbtn { background-color: var(--dark-blue-color); }
 
 
 
@@ -190,8 +204,8 @@ h4{ font-size: 12pt; }
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
-    border: solid 2px #e06969;
-    background-color: #fff;
+    border: solid 2px var(--light-blue-color);
+    background-color: white;
     min-height: 54px;
     font-size: 14px;
     line-height: 1.2;
@@ -236,7 +250,7 @@ h4{ font-size: 12pt; }
 .form-item {
     width: 200px;
     border-radius: 15px;
-    background-color: #5b64e1;
+    background-color: var(--light-blue-color);
     color: white;
     border-width: 1px;
     border-color: black;
@@ -244,12 +258,12 @@ h4{ font-size: 12pt; }
 
 .form-item:hover {
     color: white;
-    background-color: #3f48cc;
+    background-color: var(--dark-blue-color);
 }
 
 .form-item:focus {
     color: white;
-    background-color: #3f48cc;
+    background-color: var(--dark-blue-color);
 }
 
 .image-href-a {
@@ -273,9 +287,10 @@ h4{ font-size: 12pt; }
     height: auto;
     width: 160px;
     margin: 5px;
-    outline: 2px solid #000;
-    border: 3px solid #fff;
+    outline: 2px solid black;
+    border: 3px solid white;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .day {
@@ -283,8 +298,8 @@ h4{ font-size: 12pt; }
     height: auto;
     width: 160px;
     margin: 5px;
-    outline: 2px solid #f00;
-    border: 3px solid #fff;
+    outline: 2px solid red;
+    border: 3px solid white;
     border-radius: 10px;
 }
 
@@ -321,7 +336,8 @@ h4{ font-size: 12pt; }
     width: 300px;
     margin: 5px;
     padding: 5px;
-    outline: 2px solid #f00;
-    border: 3px solid #fff;
+    outline: 2px solid red;
+    border: 3px solid white;
     border-radius: 10px;
+    cursor: pointer;
 }

@@ -6,19 +6,19 @@ from os import makedirs, path, remove
 from shutil import rmtree
 from ..config import Config
 from ..database import YearsTable, Year
-from ..help import YearInfo, save_template, edit_template, CalendarUpdater
+from ..help import YearInfo, save_template, edit_template, CalendarUpdater, form_add, form_delete
 '''
-                    [[maybe_unused]]
-                    TEMPLATE                    Имя шиблона с настройкой пользователей.
-                    update_pages_()             Обновляет списки годов.
-                    update_years_(y, o, n)      Обновляет годовые файлы.
-                    create_year_(year)          Создаёт годовые файлы.
-                    delete_year_(year)          Удаляет годовые файлы.
-                    params()                    Постоянные параметры этого шаблона.
-    /calendar       calendar()                  Пересылает на страницу с этим шаблоном.
-    /add_year       add_year()                  Создаёт год.
-    /edit_year      edit_year()                 Редактирует все годы.
-    /delete_year    delete_year()               Удаляет год.
+            [[maybe_unused]]
+            TEMPLATE                    Имя шаблона с настройкой пользователей.
+            update_pages_()             Обновляет списки годов.
+            update_years_(y, o, n)      Обновляет годовые файлы.
+            create_year_(year)          Создаёт годовые файлы.
+            delete_year_(year)          Удаляет годовые файлы.
+            params()                    Постоянные параметры этого шаблона.
+    /calendar                           Пересылает на страницу с этим шаблоном.
+    /add_year                           Создаёт год.
+    /edit_year                          Редактирует все годы.
+    /delete_year                        Удаляет год.
 '''
 
 
@@ -76,20 +76,18 @@ def calendar():
 @app.route("/add_year", methods=['POST'])
 @cross_origin()
 @login_required
-def add_year():
-    try:
-        year = int(request.form['year'])
-    except Exception:
+@form_add(YearsTable)
+def add_year(row):
+    if row.__is_none__:
         return render_template(TEMPLATE, error_add_year='Поля заполнены не правильно', **params())
-
-    if not YearsTable.select(year).__is_none__:
+    if not YearsTable.select(row.year).__is_none__:
         return render_template(TEMPLATE, error_add_year='Такой год уже есть', **params())
-    if year < 2022 or year > 2100:
+    if row.year < 2022 or row.year > 2100:
         return render_template(TEMPLATE, error_add_year='Такой год создать нельзя', **params())
-    year = Year([year, Year.ALL_MONTHS, Year.ZERO12, Year.ZERO12, Year.ZERO12])
+    row = Year([row.year, Year.ALL_MONTHS, Year.ZERO12, Year.ZERO12, Year.ZERO12])
     old = YearsTable.select_all()
-    YearsTable.insert(year)
-    create_year_(year.year, old)
+    YearsTable.insert(row)
+    create_year_(row.year, old)
     return render_template(TEMPLATE, error_add_year='Год добавлен', **params())
 
 
@@ -125,16 +123,11 @@ def edit_year():
 @app.route("/delete_year", methods=['POST'])
 @cross_origin()
 @login_required
-def delete_year():
-    try:
-        year = int(request.form['year'])
-    except Exception:
+@form_delete(YearsTable)
+def delete_year(row):
+    if row.__is_none__:
         return render_template(TEMPLATE, error_delete_year='Поля заполнены не правильно', **params())
-
     old = YearsTable.select_all()
-    year = YearsTable.select(year)
-    if year.__is_none__:
-        return render_template(TEMPLATE, error_delete_year='Не верный год', **params())
-    YearsTable.delete(year)
-    delete_year_(year.year, old)
+    YearsTable.delete(row)
+    delete_year_(row.year, old)
     return render_template(TEMPLATE, error_delete_year='Год удалён', **params())

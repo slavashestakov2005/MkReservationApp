@@ -5,14 +5,17 @@ from jinja2 import TemplateNotFound
 from ..help import not_found_error
 from ..database import EventsTable, MasterClassesTable, TeachersTable
 '''
-    /               index()             Возвращает стартовую страницу.
-    /<path>         static_file(path)   Возвращает страницу или файл.
+            index_params()      Параметры главного шаблона.
+            teacher_params()    Параметры шаблона с учителями.
+    / + /index.html             Возвращает главную страницу.
+    /Info/teachers.html         Возвращает страницу с учителями.
+    /<path>                     Возвращает страницу или файл.
 '''
 
 
 def index_params():
     events = EventsTable.select_all()
-    mc = {_.id : _ for _ in MasterClassesTable.select_all()}
+    mc = {_.id: _ for _ in MasterClassesTable.select_all()}
     return {'events': events, 'mc': mc}
 
 

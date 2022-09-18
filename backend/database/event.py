@@ -1,4 +1,4 @@
-from .database import Table, Row
+from .database import Row, Table, Query
 from datetime import datetime
 from ..help.help import mouth_name
 
@@ -17,6 +17,8 @@ class Event(Row):
         classes         TEXT    NOT NULL
     """
     fields = ['id', 'teacher', 'master_class', 'places', 'booked', 'cost', 'revenue', 'start', 'classes']
+    add_form = [Row.NONE, Row.NE_INT, Row.NE_INT, Row.NE_INT, Row.NONE, Row.NE_INT, Row.NONE, Row.NE_DATETIME, Row.STR]
+    edit_form = [Row.NE_INT, Row.INT, Row.INT, Row.INT, Row.NONE, Row.INT, Row.NONE, Row.DATETIME, Row.STR]
 
     def __init__(self, row):
         Row.__init__(self, Event, row)
@@ -54,12 +56,10 @@ class Event(Row):
         return False
 
 
-class EventsTable:
+class EventsTable(Table):
     table = "event"
-
-    @staticmethod
-    def create_table() -> None:
-        Table.drop_and_create(EventsTable.table, '''(
+    row = Event
+    create = '''(
         "id"	INTEGER NOT NULL UNIQUE,
         "teacher"	INTEGER NOT NULL,
         "master_class"	INTEGER NOT NULL,
@@ -70,28 +70,8 @@ class EventsTable:
         "start"	INTEGER NOT NULL,
         "classes"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
-        );''')
-
-    @staticmethod
-    def select_all() -> list:
-        return Table.select_list(EventsTable.table, Event)
-
-    @staticmethod
-    def select(id: int):
-        return Table.select_one(EventsTable.table, Event, 'id', id)
+        );'''
 
     @staticmethod
     def select_by_time_limits(start: int, end: int) -> list:
-        return Table.select_list_with_where(EventsTable.table, Event, 'start', start, end)
-
-    @staticmethod
-    def insert(event: Event) -> None:
-        return Table.insert(EventsTable.table, event)
-
-    @staticmethod
-    def update(event: Event) -> None:
-        return Table.update(EventsTable.table, event)
-
-    @staticmethod
-    def delete(event: Event) -> None:
-        return Table.delete(EventsTable.table, event)
+        return Query.select_list_with_where(EventsTable.table, Event, 'start', start, end)

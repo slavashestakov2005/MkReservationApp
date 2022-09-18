@@ -1,4 +1,4 @@
-from .database import Table, Row
+from .database import Row, Table, Query
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -15,6 +15,8 @@ class Teacher(Row, UserMixin):
         file        TEXT    NOT NULL
     """
     fields = ['id', 'name1', 'name2', 'name3', 'login', 'password', 'file']
+    add_form = [Row.NONE, Row.NE_STR, Row.NE_STR, Row.NE_STR, Row.NE_STR, Row.NE_STR, Row.FILE]
+    edit_form = [Row.NE_INT, Row.STR, Row.STR, Row.STR, Row.NONE, Row.NONE, Row.FILE]
 
     def __init__(self, row):
         Row.__init__(self, Teacher, row)
@@ -36,12 +38,10 @@ class Teacher(Row, UserMixin):
         return '{} {} {}'.format(self.name1, self.name2, self.name3)
 
 
-class TeachersTable:
+class TeachersTable(Table):
     table = "teacher"
-
-    @staticmethod
-    def create_table() -> None:
-        Table.drop_and_create(TeachersTable.table, '''(
+    row = Teacher
+    create = '''(
         "id"	INTEGER NOT NULL UNIQUE,
         "name1"	TEXT NOT NULL,
         "name2"	TEXT NOT NULL,
@@ -50,32 +50,8 @@ class TeachersTable:
         "password"	TEXT NOT NULL,
         "file"	TEXT NOT NULL,
         PRIMARY KEY("id" AUTOINCREMENT)
-        );''')
-
-    @staticmethod
-    def select_all() -> list:
-        return Table.select_list(TeachersTable.table, Teacher)
-
-    @staticmethod
-    def select(id: int) -> Teacher:
-        return Table.select_one(TeachersTable.table, Teacher, 'id', id)
-
-    @staticmethod
-    def select_last() -> Teacher:
-        return Table.select_last(TeachersTable.table, Teacher)
+        );'''
 
     @staticmethod
     def select_by_login(login: str) -> Teacher:
-        return Table.select_one(TeachersTable.table, Teacher, 'login', login)
-
-    @staticmethod
-    def update(teacher: Teacher) -> None:
-        return Table.update(TeachersTable.table, teacher)
-
-    @staticmethod
-    def insert(teacher: Teacher) -> None:
-        return Table.insert(TeachersTable.table, teacher)
-
-    @staticmethod
-    def delete(teacher: Teacher) -> None:
-        return Table.delete(TeachersTable.table, teacher)
+        return Query.select_one(TeachersTable.table, Teacher, 'login', login)

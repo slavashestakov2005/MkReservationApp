@@ -7,9 +7,12 @@
 /* стили для корневого элемента слайдера */
 .itcss {
     position: relative;
-    max-width: 600px;
-    margin-right: auto;
-    margin-left: auto;
+    max-width: 100%;
+    margin-right: -20px;
+    margin-left: 5px;
+    margin-top: -90px;
+    z-index: -1;
+    padding: 0;
 }
 
 /* стили для wrapper */
@@ -32,7 +35,7 @@
 .itcss__item {
     position: relative;
     flex: 0 0 100%;
-    max-width: 100%;
+    margin: 0 auto;
     transform-style: preserve-3d;
     backface-visibility: hidden;
     will-change: transform;

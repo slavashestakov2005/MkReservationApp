@@ -12,18 +12,21 @@
     <link rel="stylesheet" href="{{ prefix }}CSS/bootstrap.min.css">
     <link rel="stylesheet" href="{{ prefix }}CSS/style.css">
     <link rel="stylesheet" href="{{ prefix }}CSS/slider.css">
+    <link rel="stylesheet" href="{{ prefix }}CSS/media.css">
     <link rel="icon" href="{{ prefix }}Images/favicon.ico" type="image/x-icon">
     <link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body><div class="wrapper">
-    <div class="content">
-        <div class="row col-12">
-            <div class="col lg-6">
+    <div class="content"><div class="head">
+        <div class="row justify-content-between">
+            <div class="logo">
                 <a href="{{ prefix }}/"><img src="{{ prefix }}Images/univers.png" height="80px"></a>
             </div>
             <div class="dropdown">
                 <p class="dropbtn" data-toggle="dropdown">Личный кабинет</p>
                 <div class="dropdown-menu">
+                    <a class="dropdown-item main-link-menu" href="{{ prefix }}/">Главная</a>
                     {% if anon %}
                         <a class="dropdown-item" href="{{ prefix }}login">Войти</a>
                     {% else %}
@@ -35,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="small-white-line"></div>
+    </div>
         {% block cont %}{% endblock %}
         <div class="white-line"></div>
     </div>
@@ -56,7 +59,6 @@
                 Контакты:<br>
                 г. Красноярск, ул. Корнеева 50<br>
                 enail<br>
-                vk
                 <a href="http://tehnomk.ru" target="_blank" class="image-href-a">
 					<img src="{{ prefix }}Images/favicon.ico" class="image-href-img">
                 </a>

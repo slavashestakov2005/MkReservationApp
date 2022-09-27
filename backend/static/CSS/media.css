@@ -1,0 +1,43 @@
+@media screen and (max-width : 600px){
+    :root{
+        --footer-height: 180px;
+        --footer-height-p10: 190px;
+    }
+}
+
+@media screen and (max-width : 480px){
+    .itcss {
+        display: none;
+        visibility: hidden;
+    }
+
+    :root{
+        --footer-height: 250px;
+        --footer-height-p10: 260px;
+    }
+}
+
+@media screen and (max-width : 380px){
+    :root{
+        --footer-height: 300px;
+        --footer-height-p10: 310px;
+    }
+
+    .main-link-menu {
+        display: block;
+        visibility: visible;
+    }
+
+    .logo {
+        display: none;
+        visibility: hidden;
+    }
+
+    .dropdown {
+        width: 100%;
+    }
+
+    .dropbtn {
+        width: 100%;
+    }
+}

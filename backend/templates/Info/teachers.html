@@ -8,13 +8,11 @@
         </center>
     </div>
 
-    {% for i in range(10) %}
     {% for t in teachers %}
         <div class="teacher-item">
             <p><img src="../../Images/{{ t.file }}" class="teacher-image"></p>
             <p class="teacher-name">{{ t.full_name() }}</p>
         </div>
-    {% endfor %}
     {% endfor %}
 </div>
 

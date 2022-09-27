@@ -6,6 +6,8 @@
     --light-blue-color: #5b64e1;
     --dark-blue-color: #3f48cc;
     --footer-color: #d0daee;
+    --footer-height: 150px;
+    --footer-height-p10: 160px;
     --box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
@@ -17,8 +19,8 @@ html, body {
 }
 
 .wrapper {
-	position: relative;
-	min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 .content {
@@ -26,8 +28,7 @@ html, body {
     position: relative;
     z-index: 0;
     min-height: 100%;
-    margin: 10px;
-	padding-bottom: 160px;
+    padding-bottom: var(--footer-height-p10);
 }
 
 h1{ font-size: 24pt; }
@@ -35,21 +36,43 @@ h2{ font-size: 18pt; }
 h3{ font-size: 15pt; }
 h4{ font-size: 12pt; }
 
+.head {
+    margin-right: 10px;
+    margin-left: 10px;
+    padding-right: 5px;
+}
 
+.main-link-menu {
+    display: none;
+    visibility: hidden;
+}
+
+.logo {
+    display: contents;
+    visibility: visible;
+}
 
 /* lines */
 .blue-line {
-	background-color: var(--dark-blue-color);
-	text-align: center;
-	padding: 2px;
-	min-height: 50px;
+    background-color: var(--dark-blue-color);
+    text-align: center;
+    padding: 2px;
+    min-height: 50px;
+}
+
+.white-row {
+    background-color: transparent;
+    text-align: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding-top: 10px;
 }
 
 .white-line {
-	background-color: transparent;
-	text-align: center;
-	padding: 2px;
-	min-height: 50px;
+    background-color: transparent;
+    text-align: center;
+    padding: 2px;
+    min-height: 50px;
 }
 
 .small-white-line {
@@ -63,16 +86,16 @@ h4{ font-size: 12pt; }
 
 /* footer */
 .contacts {
-	text-align: right;
+    text-align: right;
 }
 
 .footer {
     width: 100%;
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	height: 150px;
-	background-color: var(--footer-color);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: var(--footer-height);
+    background-color: var(--footer-color);
 }
 
 
@@ -84,34 +107,34 @@ h4{ font-size: 12pt; }
 }
 
 .band-item {
-	background-color: var(--light-grey-color);
-	margin: 15px;
-	padding: 15px;
-	border-radius: 10px;
+    background-color: var(--light-grey-color);
+    margin: 15px;
+    padding: 15px;
+    border-radius: 10px;
 }
 
 .band-item:hover {
-	box-shadow: var(--box-shadow);
-	cursor: pointer;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
 }
 
 .band-course-title {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .band-course-date {
-	font-size: 10pt;
+    font-size: 10pt;
 }
 
 .band-course-price {
-	font-weight: bold;
-	text-align: right;
-	font-size: 17pt;
-	height: 100%;
+    font-weight: bold;
+    text-align: right;
+    font-size: 17pt;
+    height: 100%;
 }
 
 .band-course-description {
-	font-size: 11pt;
+    font-size: 11pt;
 }
 
 
@@ -142,12 +165,12 @@ h4{ font-size: 12pt; }
 
 /* course */
 .course-title {
-	font-weight: bold;
-	font-size: 40pt;
+    font-weight: bold;
+    font-size: 40pt;
 }
 
 .course-info {
-	font-size: 17pt;
+    font-size: 17pt;
 }
 
 
@@ -159,11 +182,12 @@ h4{ font-size: 12pt; }
     text-align: center;
     background-color: var(--dark-blue-color);
     color: white;
-    margin: 3px 3px 3px 3px;
+    margin-right: 10px;
+    margin-bottom: 0;
     border-radius: 10px;
     border: none;
     overflow: hidden;
-	display: inline-block;
+    display: inline-block;
     vertical-align: middle;
     font-size: 15pt;
     font-weight: bold;
@@ -182,6 +206,7 @@ h4{ font-size: 12pt; }
     background-color: var(--light-grey-color);
     box-shadow: var(--box-shadow);
     z-index: 1;
+    width: 90%;
     right: 0;
 }
 
@@ -193,7 +218,7 @@ h4{ font-size: 12pt; }
 }
 
 .dropdown-menu a:hover { background-color: var(--dark2-grey-color); }
-.dropdown:hover .dropdown-menu { display: block;  margin-top: 0; }
+.dropdown:hover .dropdown-menu { display: block; }
 .dropdown:hover .dropbtn { background-color: var(--dark-blue-color); }
 
 
@@ -238,8 +263,10 @@ h4{ font-size: 12pt; }
 }
 
 .slider-image {
-    height: 300px;
-    width: 600px;
+    height: 56vw;
+    max-height: 400px;
+    object-fit: contain;
+    width: 100%;
 }
 
 .invisible {
